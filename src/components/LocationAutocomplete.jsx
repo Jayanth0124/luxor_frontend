@@ -52,7 +52,17 @@ function extractCityState(components = []) {
  *
  * Props: label, value, onChange(text), onSelect({ city, state, lat, lng, display }), placeholder
  */
-export default function LocationAutocomplete({ label, value, onChange, onSelect, placeholder = 'City or state' }) {
+export default function LocationAutocomplete({ 
+  label, 
+  value, 
+  onChange, 
+  onSelect, 
+  placeholder = 'City or state',
+  wrapperClassName = "relative flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3.5 hover:bg-gray-100 transition-colors cursor-text",
+  inputClassName = "w-full bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 focus:outline-none",
+  hideIcon = false,
+  hideLabel = false,
+}) {
   const inputRef    = useRef(null);
   const wrapperRef  = useRef(null);
   const timerRef    = useRef(null);
@@ -136,10 +146,12 @@ export default function LocationAutocomplete({ label, value, onChange, onSelect,
   };
 
   return (
-    <div ref={wrapperRef} className="relative flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3.5 hover:bg-gray-100 transition-colors cursor-text">
-      <MapPinIcon className="w-4 h-4 shrink-0" stroke="#84cc16" />
+    <div ref={wrapperRef} className={wrapperClassName}>
+      {!hideIcon && <MapPinIcon className="w-4 h-4 shrink-0" stroke="#84cc16" />}
       <div className="flex-1 min-w-0">
-        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">{label}</p>
+        {!hideLabel && label && (
+          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">{label}</p>
+        )}
         <input
           ref={inputRef}
           value={inputVal}
@@ -147,33 +159,33 @@ export default function LocationAutocomplete({ label, value, onChange, onSelect,
           onFocus={() => suggestions.length > 0 && setOpen(true)}
           placeholder={placeholder}
           autoComplete="off"
-          className="w-full bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 focus:outline-none"
+          className={inputClassName}
         />
       </div>
 
       {/* Suggestions dropdown */}
       {open && suggestions.length > 0 && (
         <div
-          className="absolute top-full left-0 mt-1.5 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden"
-          style={{ zIndex: 9999, minWidth: 360, width: 'max-content', maxWidth: 480 }}
+          className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden"
+          style={{ zIndex: 9999, minWidth: 320, width: 'max-content', maxWidth: 480 }}
         >
           {suggestions.map((s, i) => (
             <button
               key={s.place_id}
               type="button"
               onMouseDown={(e) => { e.preventDefault(); handleSelect(s); }}
-              className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-lime-50 transition-colors ${i < suggestions.length - 1 ? 'border-b border-gray-50' : ''}`}
+              className={`w-full text-left px-5 py-4 flex items-start gap-4 hover:bg-[#f4f7ef] transition-colors ${i < suggestions.length - 1 ? 'border-b border-gray-50' : ''}`}
             >
-              <svg className="w-4 h-4 text-[#84cc16] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5 text-[#84cc16] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
               </svg>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-800 truncate">
+                <p className="text-sm font-bold text-[#243018] truncate">
                   {s.structured_formatting?.main_text ?? s.description}
                 </p>
                 {s.structured_formatting?.secondary_text && (
-                  <p className="text-xs text-gray-400 truncate">{s.structured_formatting.secondary_text}</p>
+                  <p className="text-xs text-gray-400 font-medium truncate mt-0.5">{s.structured_formatting.secondary_text}</p>
                 )}
               </div>
             </button>

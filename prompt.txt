@@ -1,0 +1,364 @@
+Create a completely redesigned premium SearchBar component for a modern travel platform called “Luxor Stays” focused on luxury glamping, premium campsites, road trips, and self-drive vehicle rentals.
+
+The current search UI feels:
+
+too dashboard-like
+
+too boxed
+
+too compressed
+
+too generic
+
+I want a completely new premium architecture and visual hierarchy.
+
+IMPORTANT:
+
+Do NOT redesign using the same layout philosophy.
+
+Do NOT create cards inside cards.
+
+Do NOT make it look like an admin dashboard.
+
+Do NOT use browser native date pickers.
+
+The final result should feel like:
+
+Airbnb luxury experience
+
+premium travel startup
+
+modern SaaS booking product
+
+immersive but compact
+
+elegant and breathable
+
+smooth and luxurious
+
+Tech Stack:
+
+React + Next.js
+
+TailwindCSS
+
+Framer Motion
+
+production-level responsive design
+
+MAIN DESIGN GOAL
+Create ONE elegant floating booking surface.
+
+The search experience should feel:
+
+compact
+
+premium
+
+modern
+
+clean
+
+travel-focused
+
+visually balanced
+
+smooth and interactive
+
+Avoid:
+
+rigid dashboard grids
+
+nested bordered boxes
+
+tiny compressed widgets
+
+overcrowded UI
+
+Use:
+
+elegant spacing
+
+clean hierarchy
+
+large breathing space
+
+soft glassmorphism
+
+smooth transitions
+
+subtle shadows
+
+modern typography
+
+SEARCHBAR STRUCTURE
+Top:
+
+segmented Vehicles / Campsites switcher
+
+premium animated toggle
+
+rounded pill style
+
+active tab glow animation
+
+Body:
+
+responsive modern search layout
+
+Desktop Layout:
+
+elegant horizontal structure
+
+visually balanced widths
+
+compact height
+
+premium spacing
+
+Mobile Layout:
+
+stacked layout
+
+smooth responsive spacing
+
+touch-friendly fields
+
+VEHICLE SEARCH
+Fields:
+
+Search Location
+
+Pickup Date
+
+Dropoff Date
+
+Search Button
+
+REMOVE:
+
+separate pickup location
+
+separate dropoff location
+
+ONLY:
+
+one premium location search field
+
+Add:
+
+“Use Current Location” action
+
+geolocation support
+
+subtle loading interaction
+
+CAMPSITE SEARCH
+Fields:
+
+Destination
+
+Check-in
+
+Check-out
+
+Guests
+
+Search Button
+
+Guests selector should:
+
+feel premium
+
+use modern plus/minus controls
+
+compact elegant design
+
+smooth hover effects
+
+CUSTOM DATE PICKER
+DO NOT USE:
+
+input type="date"
+
+input type="datetime-local"
+
+browser native calendar UI
+
+Instead create:
+
+fully custom premium calendar popup
+
+floating animated calendar
+
+Airbnb-inspired interaction
+
+smooth Framer Motion animations
+
+Calendar Requirements:
+
+custom month navigation
+
+modern rounded popup
+
+selected date highlight
+
+soft hover states
+
+premium spacing
+
+compact elegant layout
+
+glassmorphism popup
+
+subtle shadow depth
+
+Popup animation:
+
+scale + fade
+
+smooth open/close
+
+GPU optimized
+
+fast and elegant
+
+VISUAL STYLE
+Theme:
+
+luxury nature travel
+
+premium glamping
+
+earthy greens
+
+elegant neutrals
+
+soft lime accents
+
+Use:
+
+rounded-[2rem]
+
+backdrop-blur-3xl
+
+bg-white/70
+
+subtle gradients
+
+premium shadows
+
+hover lift animations
+
+Avoid:
+
+harsh borders
+
+too many containers
+
+overly dark UI
+
+neon cyberpunk feel
+
+SEARCH BUTTON
+The CTA should feel premium:
+
+floating luxury button
+
+subtle green glow
+
+soft hover lift
+
+premium shadow
+
+icon + uppercase text
+
+Use:
+
+Framer Motion hover animation
+
+shine/glow hover effect
+
+smooth transitions
+
+ANIMATIONS
+Use Framer Motion for:
+
+tab switching
+
+field hover
+
+popup calendar
+
+button interactions
+
+smooth content transitions
+
+Animations should be:
+
+subtle
+
+elegant
+
+fast
+
+smooth
+
+not flashy
+
+GPU optimized
+
+RESPONSIVENESS
+Must be:
+
+fully responsive
+
+perfect spacing on mobile
+
+premium tablet layout
+
+clean desktop alignment
+
+Avoid:
+
+long oversized forms
+
+excessive height
+
+cramped spacing
+
+IMPORTANT DESIGN DIRECTION
+The search bar should feel like:
+
+a luxury travel product
+
+premium booking experience
+
+startup landing page
+
+editorial + product hybrid
+
+NOT:
+
+admin dashboard
+
+old booking engine
+
+bootstrap form
+
+generic hotel website
+
+FINAL EXPERIENCE
+When users see the search bar they should immediately feel:
+
+premium quality
+
+trust
+
+modern travel experience
+
+luxury getaway atmosphere
+
+smooth and elegant interaction design
+
+The final UI should look unique, modern, compact, and highly polished.

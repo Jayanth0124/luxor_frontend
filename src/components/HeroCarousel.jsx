@@ -6,201 +6,180 @@ import { useQuery } from '@tanstack/react-query';
 import SearchBar from './SearchBar';
 import { getActiveBanners } from '@/services/cms.service';
 
-// Fallback slides shown while loading or if API returns nothing
 const FALLBACK_SLIDES = [
   {
-    image:   'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=2000&q=85',
+    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=2000&q=85',
     altText: 'Luxury glamping tents by the lake',
   },
   {
-    image:   'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85',
     altText: 'Mountain landscape at sunrise',
   },
   {
-    image:   'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=2000&q=85',
+    image: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=2000&q=85',
     altText: 'Luxury tent camp under the stars',
-  },
-  {
-    image:   'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=2000&q=85',
-    altText: 'Mountain road trip adventure',
   },
 ];
 
 export default function HeroCarousel() {
   const [current, setSlide] = useState(0);
-  const [tab,     setTab]   = useState('vehicle');
 
   const { data: apiBanners = [] } = useQuery({
-    queryKey:  ['hero-banners'],
-    queryFn:   () => getActiveBanners('hero'),
+    queryKey: ['hero-banners'],
+    queryFn: () => getActiveBanners('hero'),
     staleTime: 5 * 60 * 1000,
   });
 
   const slides = apiBanners.length > 0 ? apiBanners : FALLBACK_SLIDES;
 
   useEffect(() => {
-    const id = setInterval(() => setSlide((c) => (c + 1) % slides.length), 6000);
+    const id = setInterval(() => setSlide((c) => (c + 1) % slides.length), 7000);
     return () => clearInterval(id);
   }, [slides.length]);
 
-  // Reset slide index if slides change
   useEffect(() => {
     setSlide(0);
   }, [slides.length]);
 
   return (
-    <div
-      className="relative flex flex-col"
-      style={{ minHeight: '100svh', maxHeight: 960 }}
-    >
-      {/* ── Background images (crossfade) ── */}
-      {slides.map((s, i) => (
-        <Image
-          key={s.image || i}
-          src={s.image}
-          alt={s.altText || s.title || ''}
-          fill
-          className="object-cover"
-          style={{
-            opacity:    i === current ? 1 : 0,
-            transition: 'opacity 1.6s ease',
-            zIndex:     1,
-          }}
-          priority={i === 0}
-          unoptimized={s.image?.startsWith('http')}
-        />
-      ))}
+    <section className="relative w-full min-h-[850px] lg:min-h-[100vh] flex flex-col justify-center bg-black pt-32 pb-24 font-sans">
+      
+      {/* ── Background Wrapper with Overflow Hidden ── */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* ── Background Images & Transitions ── */}
+        {slides.map((s, i) => (
+          <Image
+            key={s.image || i}
+            src={s.image}
+            alt={s.altText || s.title || 'Luxor Stays'}
+            fill
+            className="object-cover"
+            style={{
+              opacity: i === current ? 0.85 : 0,
+              transform: i === current ? 'scale(1.05)' : 'scale(1)',
+              transition: 'opacity 1.5s ease-in-out, transform 8s linear',
+              zIndex: 1,
+            }}
+            priority={i === 0}
+            unoptimized={s.image?.startsWith('http')}
+          />
+        ))}
 
-      {/* ── Overlay ── */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.38) 45%, rgba(0,0,0,0.72) 100%)',
-          zIndex: 2,
-        }}
-      />
+        {/* ── Clean Neutral Overlay (No Green Background) ── */}
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/80 via-black/40 to-black/80 lg:bg-gradient-to-r lg:from-black/90 lg:via-black/50 lg:to-transparent" />
 
-      {/* ── Main content (centered) ── */}
-      <div
-        className="relative flex-1 flex flex-col items-center justify-center text-center px-4"
-        style={{ zIndex: 10, paddingTop: '6rem', paddingBottom: '1rem' }}
-      >
-        {/* Tag line */}
-        <p className="text-[#84cc16] text-xs sm:text-sm font-black uppercase tracking-[0.22em] mb-5">
-          India's Premier Luxury Travel Experience
-        </p>
-
-        {/* Giant headline — from banner or default */}
-        {apiBanners.length > 0 && apiBanners[current] ? (
-          <h1
-            className="text-white font-black uppercase leading-none mb-5 px-2"
-            style={{ fontSize: 'clamp(2.8rem, 10vw, 8.5rem)', letterSpacing: '-0.01em', lineHeight: 0.92 }}
-          >
-            {apiBanners[current].title}
-            {apiBanners[current].titleHighlight && (
-              <><br /><span className="text-[#84cc16]">{apiBanners[current].titleHighlight}</span></>
-            )}
-          </h1>
-        ) : (
-          <h1
-            className="text-white font-black uppercase leading-none mb-5 px-2"
-            style={{ fontSize: 'clamp(2.8rem, 10vw, 8.5rem)', letterSpacing: '-0.01em', lineHeight: 0.92 }}
-          >
-            Book Your<br />
-            <span className="text-[#84cc16]">Perfect</span> Stay
-          </h1>
-        )}
-
-        {/* Subtitle */}
-        <p className="text-white/65 text-sm sm:text-base max-w-lg leading-relaxed mb-10 font-light">
-          {apiBanners[current]?.subtitle ||
-            'Discover handpicked glamping retreats and premium vehicles across India — where every journey becomes a memory.'}
-        </p>
-
-        {/* CTA buttons from banner OR default tab switcher */}
-        {apiBanners[current]?.ctaButtons?.length > 0 ? (
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-            {apiBanners[current].ctaButtons.map((btn, i) => (
-              <a
-                key={i}
-                href={btn.link || '#'}
-                className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  btn.variant === 'outline'
-                    ? 'border-2 border-white text-white hover:bg-white/15'
-                    : 'bg-[#84cc16] text-gray-900 hover:brightness-110'
-                }`}
-              >
-                {btn.label}
-              </a>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setTab('campsite')}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all ${
-                tab === 'campsite'
-                  ? 'bg-[#84cc16] text-gray-900'
-                  : 'bg-white/15 text-white/75 hover:bg-white/25 backdrop-blur-sm'
-              }`}
-            >
-              <TentIcon /> Book a Campsite
-            </button>
-            <button
-              onClick={() => setTab('vehicle')}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-t-xl text-sm font-bold transition-all ${
-                tab === 'vehicle'
-                  ? 'bg-[#84cc16] text-gray-900'
-                  : 'bg-white/15 text-white/75 hover:bg-white/25 backdrop-blur-sm'
-              }`}
-            >
-              <CarIcon /> Rent a Vehicle
-            </button>
-          </div>
-        )}
+        {/* ── Smooth Animated Wave Separator (Pure White) ── */}
+        <svg className="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shapeRendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+          </defs>
+          <g className="parallax">
+            <use xlinkHref="#gentle-wave" x="48" y="0" />
+            <use xlinkHref="#gentle-wave" x="48" y="3" />
+            <use xlinkHref="#gentle-wave" x="48" y="5" />
+            <use xlinkHref="#gentle-wave" x="48" y="7" />
+          </g>
+        </svg>
       </div>
 
-      {/* ── Search bar ── */}
-      <div
-        className="relative px-4 sm:px-6 md:px-10 xl:px-16"
-        style={{ zIndex: 20 }}
-      >
-        <div className="max-w-screen-xl mx-auto">
-          <SearchBar tab={tab} onTabChange={setTab} />
+      {/* ── Main Layout ── */}
+      <div className="relative z-[10] w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-10 xl:px-16 flex flex-col">
+        
+        {/* ── Typography & Stats ── */}
+        <div className="flex flex-col items-center text-center mx-auto mb-12 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-[#84cc16]" />
+            <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+              India's Premier Luxury Escapes
+            </span>
+          </div>
+
+          {apiBanners.length > 0 && apiBanners[current] ? (
+            <h1 className="text-white font-black leading-[1.05] tracking-tight mb-5" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
+              {apiBanners[current].title}
+              {apiBanners[current].titleHighlight && (
+                <span className="text-[#84cc16] block mt-2">{apiBanners[current].titleHighlight}</span>
+              )}
+            </h1>
+          ) : (
+            <h1 className="text-white font-black leading-[1.05] tracking-tight mb-5 drop-shadow-lg" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
+              Discover Nature's <br />
+              <span className="text-[#84cc16] block mt-2">Finest Retreats</span>
+            </h1>
+          )}
+
+          <p className="text-white/90 text-base sm:text-lg md:text-xl max-w-xl leading-relaxed mb-10 font-light drop-shadow-md">
+            {apiBanners[current]?.subtitle ||
+              'Book exclusive glamping experiences and luxury self-drive vehicles for an unforgettable journey.'}
+          </p>
+
+          {/* Minimalist Stats */}
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <StatBlock value="4.9/5" label="Average Rating" />
+            <div className="w-px h-10 bg-white/30 hidden sm:block" />
+            <StatBlock value="50+" label="Locations" />
+            <div className="w-px h-10 bg-white/30 hidden sm:block" />
+            <StatBlock value="10k+" label="Travelers" />
+          </div>
+        </div>
+
+        {/* ── Search Bar Section ── */}
+        <div className="w-full relative z-20 mt-4">
+          <SearchBar />
+        </div>
+
+        {/* Slide Indicators */}
+        <div className="flex items-center justify-center gap-2 mt-12 mb-8">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              className="rounded-full transition-all duration-300 ease-out"
+              style={{
+                width: i === current ? 40 : 10,
+                height: 4,
+                backgroundColor: i === current ? '#ffffff' : 'rgba(255,255,255,0.4)',
+              }}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
         </div>
       </div>
 
-      {/* ── Slide dots ── */}
-      <div className="relative flex justify-center gap-2 py-5" style={{ zIndex: 10 }}>
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setSlide(i)}
-            className="rounded-full transition-all duration-300 cursor-pointer"
-            style={{
-              width:            i === current ? 24 : 7,
-              height:           7,
-              backgroundColor:  i === current ? '#84cc16' : 'rgba(255,255,255,0.35)',
-            }}
-          />
-        ))}
-      </div>
+      {/* ── Styles ── */}
+      <style>{`
+        .hero-waves {
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          width: 100%;
+          height: 6vh;
+          min-height: 50px;
+          max-height: 100px;
+          z-index: 10;
+        }
+        .parallax > use {
+          animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+        }
+        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; fill: rgba(255,255,255,0.3); }
+        .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; fill: rgba(255,255,255,0.5); }
+        .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; fill: rgba(255,255,255,0.7); }
+        .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; fill: #ffffff; }
+        @keyframes move-forever {
+          0% { transform: translate3d(-90px, 0, 0); }
+          100% { transform: translate3d(85px, 0, 0); }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+/* ── UI Helpers ── */
+function StatBlock({ value, label }) {
+  return (
+    <div className="flex flex-col">
+      <span className="text-white font-black text-2xl">{value}</span>
+      <span className="text-white/80 text-[11px] font-semibold uppercase tracking-[0.2em] mt-1">{label}</span>
     </div>
-  );
-}
-
-function TentIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 20l9-16 9 16M3 20h18M9 20l3-5.333L15 20" />
-    </svg>
-  );
-}
-
-function CarIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-    </svg>
   );
 }

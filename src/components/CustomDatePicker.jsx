@@ -1,239 +1,200 @@
-'use client';
-
 import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
 
-const DAYS   = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const MONTHS = ['January','February','March','April','May','June',
-                'July','August','September','October','November','December'];
-
-const CalIcon = () => (
-  <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="#84cc16" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5"/>
-  </svg>
-);
-
-function buildGrid(year, month) {
-  const firstDay    = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const daysInPrev  = new Date(year, month, 0).getDate();
-  const cells = [];
-  for (let i = firstDay - 1; i >= 0; i--)
-    cells.push({ day: daysInPrev - i, type: 'prev' });
-  for (let d = 1; d <= daysInMonth; d++)
-    cells.push({ day: d, type: 'cur' });
-  while (cells.length < 42)
-    cells.push({ day: cells.length - firstDay - daysInMonth + 1, type: 'next' });
-  return cells;
+const TIME_SLOTS = [];
+for (let i = 8; i <= 22; i++) { // 8 AM to 10 PM
+  const hour = i > 12 ? i - 12 : i;
+  const ampm = i < 12 ? 'AM' : 'PM';
+  TIME_SLOTS.push(`${hour}:00 ${ampm}`);
+  TIME_SLOTS.push(`${hour}:30 ${ampm}`);
 }
 
-/** Returns 'full' | 'partial' | 'none' for a given calendar day */
-function getBlockStatus(year, month, day, blockedRanges) {
-  if (!blockedRanges.length) return 'none';
-  const dayStart = new Date(year, month, day).getTime();
-  const dayEnd   = new Date(year, month, day + 1).getTime();
-  let partial = false;
-  for (const b of blockedRanges) {
-    const bs = new Date(b.startDate).getTime();
-    const be = new Date(b.endDate).getTime();
-    if (bs < dayEnd && be > dayStart) {
-      if (bs <= dayStart && be >= dayEnd) return 'full';
-      partial = true;
-    }
-  }
-  return partial ? 'partial' : 'none';
-}
+export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSelect, minDate, showTime = true }) {
+  const [currentMonth, setCurrentMonth] = useState(dayjs());
+  const [selectedTime, setSelectedTime] = useState('10:00 AM');
+  const timeScrollRef = useRef(null);
 
-export default function CustomDatePicker({
-  label,
-  value,
-  onChange,
-  alignRight = false,
-  blockedRanges = [],
-  minDate = '',
-}) {
-  const [open, setOpen] = useState(false);
-  const [view, setView] = useState(() => value ? new Date(value + 'T12:00:00') : new Date());
-  const wrapRef         = useRef(null);
-
+  // Initialize selected time from selectedDate if it contains one
   useEffect(() => {
-    const h = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
-  }, []);
+    if (selectedDate && selectedDate.includes(' ')) {
+      const timePart = selectedDate.split(' ').slice(1).join(' ');
+      if (timePart) setSelectedTime(timePart);
+    }
+  }, [selectedDate]);
 
-  const prevMonth = () => setView(v => new Date(v.getFullYear(), v.getMonth() - 1, 1));
-  const nextMonth = () => setView(v => new Date(v.getFullYear(), v.getMonth() + 1, 1));
+  // Center/scroll to selected time on open
+  useEffect(() => {
+    if (isOpen && timeScrollRef.current) {
+      const selectedIndex = TIME_SLOTS.indexOf(selectedTime);
+      if (selectedIndex !== -1) {
+        const itemWidth = 84; // width of time pill + margin
+        timeScrollRef.current.scrollLeft = (selectedIndex * itemWidth) - 100;
+      }
+    }
+  }, [isOpen, selectedTime]);
 
-  const dateStr = (year, month, day) =>
-    `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const daysInMonth = currentMonth.daysInMonth();
+  const firstDayOfMonth = currentMonth.startOf('month').day();
+  const blanks = Array.from({ length: firstDayOfMonth });
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  const todayDateStr = () => {
-    const t = new Date();
-    return dateStr(t.getFullYear(), t.getMonth(), t.getDate());
+  if (!isOpen) return null;
+
+  const handleDateSelect = (dateStr) => {
+    if (showTime) {
+      onSelect(`${dateStr} ${selectedTime}`);
+    } else {
+      onSelect(dateStr);
+    }
   };
 
-  const isPast = (day) => {
-    if (!minDate) return false;
-    return dateStr(view.getFullYear(), view.getMonth(), day) < minDate;
+  const handleTimeSelect = (timeStr, e) => {
+    e.stopPropagation();
+    setSelectedTime(timeStr);
+    if (selectedDate) {
+      const datePart = selectedDate.split(' ')[0] || selectedDate;
+      onSelect(`${datePart} ${timeStr}`);
+    } else {
+      // If no date is selected yet, select today's date with this time
+      const todayStr = dayjs().format('YYYY-MM-DD');
+      onSelect(`${todayStr} ${timeStr}`);
+    }
   };
 
-  const pickDay = (day) => {
-    onChange(dateStr(view.getFullYear(), view.getMonth(), day));
-    setOpen(false);
-  };
-
-  const isSelected = (day) => {
-    if (!value) return false;
-    const s = new Date(value + 'T12:00:00');
-    return s.getFullYear() === view.getFullYear() && s.getMonth() === view.getMonth() && s.getDate() === day;
-  };
-
-  const isToday = (day) => {
-    const t = new Date();
-    return t.getFullYear() === view.getFullYear() && t.getMonth() === view.getMonth() && t.getDate() === day;
-  };
-
-  const display = value ? dayjs(value + 'T12:00:00').format('D MMM YY') : null;
-  const hasBlocks = blockedRanges.length > 0;
+  const selectedDatePart = selectedDate ? selectedDate.split(' ')[0] : null;
 
   return (
-    <div ref={wrapRef} className="relative">
-
-      {/* ── Trigger ── */}
-      <div
-        onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3.5 hover:bg-gray-100 transition-colors cursor-pointer select-none"
-      >
-        <CalIcon />
-        <div className="flex-1 min-w-0">
-          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">{label}</p>
-          <p className={`text-sm font-semibold truncate ${display ? 'text-gray-800' : 'text-gray-400'}`}>
-            {display || 'Add date'}
-          </p>
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 12, scale: 0.97 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="absolute top-full left-0 mt-3 bg-white/95 backdrop-blur-2xl border border-gray-100 rounded-3xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.08)] w-[320px] z-50 origin-top overflow-hidden flex flex-col font-sans"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* ── Header: Month & Year switcher ── */}
+      <div className="flex justify-between items-center mb-4">
+        <span className="font-semibold text-gray-800 text-base tracking-tight">{currentMonth.format('MMMM YYYY')}</span>
+        <div className="flex items-center gap-0.5">
+          <button 
+            type="button"
+            onClick={() => setCurrentMonth(currentMonth.subtract(1, 'month'))} 
+            className="w-8 h-8 rounded-full hover:bg-gray-100/80 flex items-center justify-center transition-colors active:scale-95"
+          >
+            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button 
+            type="button"
+            onClick={() => setCurrentMonth(currentMonth.add(1, 'month'))} 
+            className="w-8 h-8 rounded-full hover:bg-gray-100/80 flex items-center justify-center transition-colors active:scale-95"
+          >
+            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </button>
         </div>
-        <svg
-          className="w-3.5 h-3.5 text-gray-300 shrink-0 transition-transform"
-          style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
-        </svg>
       </div>
 
-      {/* ── Calendar dropdown ── */}
-      {open && (
-        <div
-          className={`absolute top-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72 ${alignRight ? 'right-0' : 'left-0'}`}
-          style={{ zIndex: 9999 }}
-        >
-          {/* Month header */}
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-black text-gray-800">
-              {MONTHS[view.getMonth()]} {view.getFullYear()}
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={prevMonth}
-                className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
-              >
-                <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
-                </svg>
-              </button>
-              <button
-                onClick={nextMonth}
-                className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
-              >
-                <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
-                </svg>
-              </button>
-            </div>
+      {/* ── Days of Week ── */}
+      <div className="grid grid-cols-7 gap-y-2 text-center mb-1">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
+          <div key={i} className="text-[11px] font-medium text-gray-400 tracking-wider">{d}</div>
+        ))}
+      </div>
+
+      {/* ── Calendar Grid ── */}
+      <div className="grid grid-cols-7 gap-y-2 gap-x-0.5 text-center mb-4">
+        {blanks.map((_, i) => <div key={`blank-${i}`} />)}
+        {days.map(day => {
+          const date = currentMonth.date(day);
+          const dateStr = date.format('YYYY-MM-DD');
+          const isSelected = selectedDatePart && dateStr === selectedDatePart;
+          const isPast = date.isBefore(dayjs().startOf('day'));
+          const isBeforeMinDate = minDate && date.isBefore(dayjs(minDate).startOf('day'));
+          const disabled = isPast || isBeforeMinDate;
+          const isToday = date.isSame(dayjs(), 'day');
+
+          return (
+            <button
+              key={day}
+              type="button"
+              disabled={disabled}
+              onClick={() => handleDateSelect(dateStr)}
+              className={`w-9 h-9 mx-auto rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 relative ${
+                isSelected
+                  ? 'bg-[#84cc16] text-white shadow-sm shadow-lime-500/20'
+                  : disabled
+                    ? 'text-gray-300 cursor-not-allowed'
+                    : isToday 
+                      ? 'text-[#84cc16] hover:bg-lime-50 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              {isToday && !isSelected && (
+                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-[#84cc16]" />
+              )}
+              {day}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Unique, Premium Horizontal Time Slider ── */}
+      {showTime && (
+        <div className="border-t border-gray-50 pt-3 pb-2 mb-2">
+          <div className="flex items-center gap-1.5 px-1 mb-2">
+            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Select Time</span>
           </div>
 
-          {/* Day headers */}
-          <div className="grid grid-cols-7 mb-1">
-            {DAYS.map((d, i) => (
-              <div key={i} className="text-center text-[10px] font-black text-gray-400 py-1.5">{d}</div>
-            ))}
-          </div>
-
-          {/* Date cells */}
-          <div className="grid grid-cols-7 gap-y-1">
-            {buildGrid(view.getFullYear(), view.getMonth()).map((cell, i) => {
-              const inactive    = cell.type !== 'cur';
-              const past        = !inactive && isPast(cell.day);
-              const sel         = !inactive && isSelected(cell.day);
-              const today_      = !inactive && isToday(cell.day);
-              const blockStatus = (!inactive && !past)
-                ? getBlockStatus(view.getFullYear(), view.getMonth(), cell.day, blockedRanges)
-                : 'none';
-              const fullBlocked = blockStatus === 'full';
-              const partial     = blockStatus === 'partial';
-              const disabled    = inactive || past || fullBlocked;
-
+          <div 
+            ref={timeScrollRef} 
+            className="flex gap-2 overflow-x-auto py-1 px-0.5 scrollbar-none scroll-smooth snap-x select-none"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {TIME_SLOTS.map((time) => {
+              const isSelected = selectedTime === time;
               return (
                 <button
-                  key={i}
+                  key={time}
                   type="button"
-                  disabled={disabled}
-                  onClick={() => !disabled && pickDay(cell.day)}
-                  title={fullBlocked ? 'Not available' : partial ? 'Some time slots unavailable' : undefined}
-                  className={[
-                    'relative flex flex-col items-center justify-center rounded-full text-xs font-semibold transition-colors py-1',
-                    inactive   ? 'text-gray-300 cursor-default'                                         : '',
-                    past       ? 'text-gray-300 cursor-not-allowed'                                     : '',
-                    fullBlocked && !sel ? 'text-gray-300 cursor-not-allowed line-through bg-gray-50'    : '',
-                    !disabled && !sel && !today_ ? 'text-gray-700 hover:bg-[#84cc16]/15 cursor-pointer' : '',
-                    today_ && !sel ? 'border border-[#84cc16] text-[#0a2535] font-black'                : '',
-                    sel ? 'font-black text-[#0a2535]'                                                   : '',
-                  ].join(' ')}
-                  style={sel ? { backgroundColor: '#84cc16' } : {}}
+                  onClick={(e) => handleTimeSelect(time, e)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 snap-center border ${
+                    isSelected 
+                      ? 'bg-[#84cc16] text-white border-transparent shadow-sm shadow-lime-500/10' 
+                      : 'bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
                 >
-                  {cell.day}
-                  {partial && !sel && (
-                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-400" />
-                  )}
+                  {time}
                 </button>
               );
             })}
           </div>
-
-          {/* Legend */}
-          {hasBlocks && (
-            <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-gray-100">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-gray-200 inline-block shrink-0" />
-                <span className="text-[9px] text-gray-400">Unavailable</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-orange-400 inline-block shrink-0" />
-                <span className="text-[9px] text-gray-400">Partial slots blocked</span>
-              </div>
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => { onChange(''); setOpen(false); }}
-              className="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              Clear
-            </button>
-            <button
-              type="button"
-              onClick={() => { onChange(todayDateStr()); setOpen(false); }}
-              className="text-xs font-black transition-colors"
-              style={{ color: '#84cc16' }}
-            >
-              Today
-            </button>
-          </div>
         </div>
       )}
-    </div>
+
+      {/* ── Footer ── */}
+      <div className="border-t border-gray-50 pt-3 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onSelect(''); onClose(); }}
+          className="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          Clear all
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            const todayStr = dayjs().format('YYYY-MM-DD');
+            handleDateSelect(todayStr);
+          }}
+          className="text-xs font-bold text-[#84cc16] hover:text-[#65a30d] transition-colors"
+        >
+          Today
+        </button>
+      </div>
+    </motion.div>
   );
 }

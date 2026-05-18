@@ -136,3 +136,36 @@ export function CheckBadgeIcon({ className = 'w-4 h-4', stroke = 'currentColor',
     </svg>
   );
 }
+
+export function CalendarIcon({ className = 'w-4 h-4', stroke = 'currentColor', ...props }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke={stroke} strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+    </svg>
+  );
+}
+
+export function ChevronLeftIcon({ className = 'w-4 h-4', stroke = 'currentColor', ...props }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke={stroke} strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon({ className = 'w-4 h-4', stroke = 'currentColor', ...props }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke={stroke} strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    </svg>
+  );
+}
+
+export function CrosshairIcon({ className = 'w-4 h-4', stroke = 'currentColor', ...props }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke={stroke} strokeWidth={2} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2.25v2.25M12 19.5v2.25M2.25 12h2.25M19.5 12h2.25M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+    </svg>
+  );
+}
