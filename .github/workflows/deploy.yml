@@ -1,0 +1,39 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.LUXOR_EC2_SSH_KEY }}
+          script: |
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            echo "==> Pulling latest code..."
+            cd ~/apps/luxor-website
+            git pull origin main
+
+            echo "==> Installing dependencies..."
+            npm install
+
+            echo "==> Building Next.js app..."
+            npm run build
+
+            echo "==> Restarting PM2 process..."
+            pm2 restart website
+
+            echo "==> Deploy complete."
+            pm2 show website
