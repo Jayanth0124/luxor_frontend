@@ -222,8 +222,8 @@ function CampsitesContent() {
           style={{ y: textY }}
         >
           <h1 className="text-white font-black text-5xl md:text-7xl lg:text-[5.5rem] tracking-[-0.04em] leading-[1.05] drop-shadow-xl mb-6">
-            Sleep Under<br className="hidden sm:block" />
-            <span className="text-[#84cc16]"> The Stars.</span>
+            SLEEP UNDER<br className="hidden sm:block" />
+            <span className="text-[#84cc16]"> THE STARS</span>
           </h1>
           <p className="text-white/80 font-medium text-lg md:text-xl drop-shadow-md max-w-2xl mx-auto">
             Discover handpicked glamping retreats, forest lodges, and wilderness camps across India's most breathtaking landscapes.

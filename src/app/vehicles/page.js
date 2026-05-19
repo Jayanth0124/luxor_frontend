@@ -356,8 +356,8 @@ function VehiclesContent() {
           style={{ y: textY }}
         >
           <h1 className="text-white font-black text-5xl md:text-7xl lg:text-[5.5rem] tracking-[-0.04em] leading-[1.05] drop-shadow-xl mb-6">
-            Chase The <br className="hidden sm:block" />
-            <span className="text-[#84cc16]">Horizon.</span>
+            CHASE THE <br className="hidden sm:block" />
+            <span className="text-[#84cc16]">HORIZON</span>
           </h1>
           <p className="text-white/90 font-medium text-lg md:text-2xl drop-shadow-md max-w-2xl mx-auto">
             Experience the world's most breathtaking routes with our premium fleet of SUVs and luxury caravans.
