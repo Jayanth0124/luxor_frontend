@@ -9,26 +9,26 @@ import { getVehicles } from '@/services/vehicles.service';
 
 export default function VehiclesContent() {
   const searchParams = useSearchParams();
-  const router       = useRouter();
+  const router = useRouter();
   const limit = 12;
 
-  const [search, setSearch]   = useState(() => searchParams.get('search') || '');
-  const [state,  setState]    = useState(() => searchParams.get('state')  || '');
-  const [city,   setCity]     = useState(() => searchParams.get('city')   || '');
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
+  const [state, setState] = useState(() => searchParams.get('state') || '');
+  const [city, setCity] = useState(() => searchParams.get('city') || '');
   const [locationDisplay, setLocationDisplay] = useState(
     () => [searchParams.get('city'), searchParams.get('state')].filter(Boolean).join(', ') || searchParams.get('search') || ''
   );
-  const [nearMe,     setNearMe]     = useState(false);
-  const [userLat,    setUserLat]    = useState(null);
-  const [userLng,    setUserLng]    = useState(null);
+  const [nearMe, setNearMe] = useState(false);
+  const [userLat, setUserLat] = useState(null);
+  const [userLng, setUserLng] = useState(null);
   const [geoLoading, setGeoLoading] = useState(false);
-  const [page,       setPage]       = useState(1);
+  const [page, setPage] = useState(1);
 
   const pushUrl = (s, st, ci, p = 1) => {
     const params = new URLSearchParams();
-    if (s)  params.set('search', s);
-    if (st) params.set('state',  st);
-    if (ci) params.set('city',   ci);
+    if (s) params.set('search', s);
+    if (st) params.set('state', st);
+    if (ci) params.set('city', ci);
     if (p > 1) params.set('page', p);
     router.replace(`/vehicles?${params.toString()}`, { scroll: false });
   };
@@ -47,8 +47,8 @@ export default function VehiclesContent() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const vehicles   = data?.vehicles ?? [];
-  const total      = data?.total ?? 0;
+  const vehicles = data?.vehicles ?? [];
+  const total = data?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
 
   const handleSearch = (e) => {
@@ -159,7 +159,7 @@ export default function VehiclesContent() {
         {(city || state) && (
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <span className="text-xs text-gray-400">Showing results for:</span>
-            {city  && <span className="text-xs bg-lime-50 text-lime-700 border border-lime-200 rounded-full px-3 py-1">{city}</span>}
+            {city && <span className="text-xs bg-lime-50 text-lime-700 border border-lime-200 rounded-full px-3 py-1">{city}</span>}
             {state && <span className="text-xs bg-lime-50 text-lime-700 border border-lime-200 rounded-full px-3 py-1">{state}</span>}
           </div>
         )}
