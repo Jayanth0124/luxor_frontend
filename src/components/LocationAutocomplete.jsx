@@ -24,13 +24,13 @@ function loadGoogleMaps() {
       }, 80);
       return;
     }
-    const s   = document.createElement('script');
-    s.id      = 'gm-website-script';
+    const s = document.createElement('script');
+    s.id = 'gm-website-script';
     // No "loading=async" — that breaks the onload-based detection
-    s.src     = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&libraries=places`;
-    s.async   = true;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&libraries=places`;
+    s.async = true;
     s.onerror = () => resolve(false);
-    s.onload  = () => resolve(true);
+    s.onload = () => resolve(true);
     document.head.appendChild(s);
   });
   return _loadPromise;
@@ -39,7 +39,7 @@ function loadGoogleMaps() {
 function extractCityState(components = []) {
   let city = '', state = '';
   for (const c of components) {
-    if (c.types.includes('locality'))                    city  = c.long_name;
+    if (c.types.includes('locality')) city = c.long_name;
     if (c.types.includes('administrative_area_level_1')) state = c.long_name;
   }
   return { city, state };
@@ -52,25 +52,25 @@ function extractCityState(components = []) {
  *
  * Props: label, value, onChange(text), onSelect({ city, state, lat, lng, display }), placeholder
  */
-export default function LocationAutocomplete({ 
-  label, 
-  value, 
-  onChange, 
-  onSelect, 
+export default function LocationAutocomplete({
+  label,
+  value,
+  onChange,
+  onSelect,
   placeholder = 'City or state',
   wrapperClassName = "relative flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3.5 hover:bg-gray-100 transition-colors cursor-text",
   inputClassName = "w-full bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 focus:outline-none",
   hideIcon = false,
   hideLabel = false,
 }) {
-  const inputRef    = useRef(null);
-  const wrapperRef  = useRef(null);
-  const timerRef    = useRef(null);
+  const inputRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const timerRef = useRef(null);
 
-  const [inputVal,    setInputVal]    = useState(value || '');
+  const [inputVal, setInputVal] = useState(value || '');
   const [suggestions, setSuggestions] = useState([]);
-  const [open,        setOpen]        = useState(false);
-  const [gmReady,     setGmReady]     = useState(false);
+  const [open, setOpen] = useState(false);
+  const [gmReady, setGmReady] = useState(false);
 
   // Load Google Maps on mount
   useEffect(() => {
@@ -131,8 +131,8 @@ export default function LocationAutocomplete({
     new window.google.maps.Geocoder().geocode({ placeId: pred.place_id }, (results, status) => {
       if (status === 'OK' && results[0]) {
         const { city, state } = extractCityState(results[0].address_components);
-        const lat     = results[0].geometry.location.lat();
-        const lng     = results[0].geometry.location.lng();
+        const lat = results[0].geometry.location.lat();
+        const lng = results[0].geometry.location.lng();
         const display = [city, state].filter(Boolean).join(', ') || pred.description;
         setInputVal(display);
         onChange?.(display);
@@ -166,7 +166,7 @@ export default function LocationAutocomplete({
       {/* Suggestions dropdown */}
       {open && suggestions.length > 0 && (
         <div
-          className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden"
+          className={dropdownClassName || "absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden"}
           style={{ zIndex: 9999, minWidth: 320, width: 'max-content', maxWidth: 480 }}
         >
           {suggestions.map((s, i) => (

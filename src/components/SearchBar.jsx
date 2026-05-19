@@ -11,11 +11,69 @@ import GuestsPopover from './GuestsPopover';
 // ─── Minimalist SVG Icons ────────────────────────────────────────────────
 const SearchIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>;
 const MapPinIcon = () => <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>;
-const TargetIcon = () => <svg className="w-4 h-4 text-[#84cc16]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" /></svg>;
+const TargetIcon = ({ className }) => <svg className={className || "w-4 h-4 text-[#84cc16]"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 2v4M12 18v4M2 12h4M18 12h4" /></svg>;
 const CalendarIcon = () => <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>;
 const UsersIcon = () => <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>;
 
-/* ─── Main SearchBar Component ─────────────────────────────────────────── */
+// ─── Premium Location Popover ───────────────────────────────────────────
+function LocationPopover({ isOpen, onClose, location, setLocation, handleGeoLocation }) {
+  // Auto-focus the input when the popover opens so users can type immediately
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        const input = document.querySelector('.location-popover-input input');
+        if (input) input.focus();
+      }, 100);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -15, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -15, scale: 0.95 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      className="absolute bottom-full left-0 mb-4 bg-white/95 backdrop-blur-3xl border border-gray-100 rounded-[2rem] p-4 shadow-[0_-30px_60px_-15px_rgba(0,0,0,0.15)] w-[360px] lg:w-[420px] z-50 origin-bottom flex flex-col"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* ── Search Input Container ── */}
+      <div className="location-popover-input bg-gray-50 rounded-[1.25rem] border border-gray-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#84cc16]/20 transition-all p-1">
+        <LocationAutocomplete
+          value={location}
+          onChange={(val) => setLocation(val)}
+          onSelect={({ display }) => { setLocation(display); onClose(); }}
+          placeholder="Search destinations..."
+          wrapperClassName="flex items-center gap-3 px-4 py-3 bg-transparent"
+          inputClassName="w-full bg-transparent outline-none text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal"
+          hideIcon={false}
+          hideLabel={true}
+          dropdownClassName="absolute bottom-full left-0 mb-2 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-[0_-20px_60px_rgba(0,0,0,0.12)] overflow-hidden"
+        />
+      </div>
+
+      <div className="h-px bg-gray-100 my-3 mx-2" />
+
+      {/* ── Current Location Interactive Row ── */}
+      <button
+        type="button"
+        onClick={() => { handleGeoLocation(); onClose(); }}
+        className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-[1.25rem] transition-colors text-left group"
+      >
+        <div className="w-12 h-12 rounded-full bg-lime-50 flex items-center justify-center shrink-0 group-hover:bg-[#84cc16] transition-colors shadow-sm border border-lime-100 group-hover:border-[#84cc16]">
+          <TargetIcon className="w-5 h-5 text-[#84cc16] group-hover:text-white transition-colors" />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-gray-900 group-hover:text-[#84cc16] transition-colors">Use Current Location</p>
+          <p className="text-xs text-gray-500 font-medium mt-0.5">Detect your live location automatically</p>
+        </div>
+      </button>
+    </motion.div>
+  );
+}
+
+// ─── Main Component ─────────────────────────────────────────────────────
 export default function SearchBar({ tab: externalTab, onTabChange }) {
   const router = useRouter();
   const [internalTab, setInternalTab] = useState('vehicle');
@@ -41,8 +99,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  const handleGeoLocation = (e) => {
-    e.stopPropagation();
+  const handleGeoLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(() => {
         setLocation('Current Location');
@@ -58,6 +115,9 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
     if (tab === 'campsite' && guests > 1) params.set('guests', guests);
     router.push(`/${tab}s?${params.toString()}`);
   };
+
+  // Dynamic Formatting based on tab
+  const dateFormatString = tab === 'vehicle' ? 'MMM D, h:mm A' : 'MMM D, YYYY';
 
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col items-center z-20 relative" ref={containerRef}>
@@ -89,33 +149,29 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
       {/* ── The Floating Luxury Booking Surface (Airbnb Style) ── */}
       <div className="bg-white rounded-[2rem] shadow-[0_16px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 flex flex-col lg:flex-row items-center w-full relative">
 
-        {/* Location Input */}
-        <div className="flex-1 w-full lg:w-auto px-8 py-4 lg:py-5 hover:bg-gray-50 rounded-[2rem] cursor-text transition-colors relative flex items-center group">
+        {/* Location Trigger */}
+        <div
+          onClick={() => setActiveDropdown(activeDropdown === 'location' ? null : 'location')}
+          className="flex-1 w-full lg:w-auto px-8 py-4 lg:py-5 hover:bg-gray-50 rounded-[2rem] cursor-pointer transition-colors relative flex items-center group"
+        >
           <div className="mr-4"><MapPinIcon /></div>
           <div className="flex-1">
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-800 mb-1">
               {tab === 'vehicle' ? 'Pick-up Location' : 'Destination'}
             </p>
-            <LocationAutocomplete
-              value={location}
-              onChange={(val) => setLocation(val)}
-              onSelect={({ display }) => setLocation(display)}
-              placeholder="Where are you going?"
-              wrapperClassName="w-full"
-              inputClassName="w-full bg-transparent outline-none text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
-              hideIcon={true}
-              hideLabel={true}
-            />
+            <p className={`text-sm font-medium truncate ${location ? 'text-gray-900' : 'text-gray-400 font-normal'}`}>
+              {location || 'Where are you going?'}
+            </p>
           </div>
-          {tab === 'vehicle' && (
-            <button
-              onClick={handleGeoLocation}
-              className="w-8 h-8 rounded-full bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-gray-200 absolute right-6"
-              title="Use current location"
-            >
-              <TargetIcon />
-            </button>
-          )}
+          <AnimatePresence>
+            <LocationPopover
+              isOpen={activeDropdown === 'location'}
+              onClose={() => setActiveDropdown('start')} // Automatically advances to 'Pick-up Date'
+              location={location}
+              setLocation={setLocation}
+              handleGeoLocation={handleGeoLocation}
+            />
+          </AnimatePresence>
         </div>
 
         <div className="hidden lg:block w-px h-12 bg-gray-200" />
@@ -131,7 +187,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               {tab === 'vehicle' ? 'Pick-up Date' : 'Check in'}
             </p>
             <p className={`text-sm font-medium ${pickupDate ? 'text-gray-900' : 'text-gray-400 font-normal'}`}>
-              {pickupDate ? dayjs(pickupDate).format('MMM D, h:mm A') : 'Add dates'}
+              {pickupDate ? dayjs(pickupDate).format(dateFormatString) : 'Add dates'}
             </p>
           </div>
           <AnimatePresence>
@@ -140,6 +196,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               onClose={() => setActiveDropdown('end')}
               selectedDate={pickupDate}
               onSelect={setPickupDate}
+              showTime={tab === 'vehicle'}
             />
           </AnimatePresence>
         </div>
@@ -157,7 +214,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               {tab === 'vehicle' ? 'Drop-off Date' : 'Check out'}
             </p>
             <p className={`text-sm font-medium ${dropoffDate ? 'text-gray-900' : 'text-gray-400 font-normal'}`}>
-              {dropoffDate ? dayjs(dropoffDate).format('MMM D, h:mm A') : 'Add dates'}
+              {dropoffDate ? dayjs(dropoffDate).format(dateFormatString) : 'Add dates'}
             </p>
           </div>
           <AnimatePresence>
@@ -167,6 +224,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               selectedDate={dropoffDate}
               onSelect={setDropoffDate}
               minDate={pickupDate}
+              showTime={tab === 'vehicle'}
             />
           </AnimatePresence>
         </div>

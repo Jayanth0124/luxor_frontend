@@ -8,16 +8,25 @@ import { getActiveBanners } from '@/services/cms.service';
 
 const FALLBACK_SLIDES = [
   {
-    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=2000&q=85',
-    altText: 'Luxury glamping tents by the lake',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85',
-    altText: 'Mountain landscape at sunrise',
-  },
-  {
     image: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=2000&q=85',
     altText: 'Luxury tent camp under the stars',
+    title: "DISCOVER NATURE'S",
+    titleHighlight: "FINEST RETREATS",
+    subtitle: "Disconnect from the noise and reconnect under the stars at our exclusive, hand-picked luxury campsites."
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=2000&q=85',
+    altText: 'Overland vehicle by the lake',
+    title: "ELEVATE YOUR",
+    titleHighlight: "OUTDOOR ESCAPE",
+    subtitle: "Experience the perfect blend of wild nature and unparalleled comfort with our premium glamping packages."
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=2000&q=85',
+    altText: 'Camper van in the forest',
+    title: "CONQUER THE",
+    titleHighlight: "UNSEEN TRAILS",
+    subtitle: "Rent high-end, self-drive adventure vehicles engineered for your most ambitious overland journeys."
   },
 ];
 
@@ -43,7 +52,7 @@ export default function HeroCarousel() {
 
   return (
     <section className="relative w-full min-h-[850px] lg:min-h-[100vh] flex flex-col justify-center bg-black pt-32 pb-24 font-sans">
-      
+
       {/* ── Background Wrapper with Overflow Hidden ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {/* ── Background Images & Transitions ── */}
@@ -84,7 +93,7 @@ export default function HeroCarousel() {
 
       {/* ── Main Layout ── */}
       <div className="relative z-[10] w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-10 xl:px-16 flex flex-col">
-        
+
         {/* ── Typography & Stats ── */}
         <div className="flex flex-col items-center text-center mx-auto mb-12 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-md">
@@ -94,22 +103,17 @@ export default function HeroCarousel() {
             </span>
           </div>
 
-          {apiBanners.length > 0 && apiBanners[current] ? (
-            <h1 className="text-white font-black leading-[1.05] tracking-tight mb-5" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
-              {apiBanners[current].title}
-              {apiBanners[current].titleHighlight && (
-                <span className="text-[#84cc16] block mt-2">{apiBanners[current].titleHighlight}</span>
+          {slides[current] && (
+            <h1 className="text-white font-black leading-[1.05] tracking-tight mb-5 drop-shadow-lg transition-opacity duration-700" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
+              {slides[current].title || "DISCOVER NATURE'S"} <br />
+              {slides[current].titleHighlight && (
+                <span className="text-[#84cc16] block mt-2">{slides[current].titleHighlight}</span>
               )}
-            </h1>
-          ) : (
-            <h1 className="text-white font-black leading-[1.05] tracking-tight mb-5 drop-shadow-lg" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
-              Discover Nature's <br />
-              <span className="text-[#84cc16] block mt-2">Finest Retreats</span>
             </h1>
           )}
 
-          <p className="text-white/90 text-base sm:text-lg md:text-xl max-w-xl leading-relaxed mb-10 font-light drop-shadow-md">
-            {apiBanners[current]?.subtitle ||
+          <p className="text-white/90 text-base sm:text-lg md:text-xl max-w-xl leading-relaxed mb-10 font-light drop-shadow-md transition-opacity duration-700">
+            {slides[current]?.subtitle ||
               'Book exclusive glamping experiences and luxury self-drive vehicles for an unforgettable journey.'}
           </p>
 

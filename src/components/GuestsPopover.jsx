@@ -4,10 +4,10 @@ export default function GuestsPopover({ isOpen, guests, onChange }) {
   if (!isOpen) return null;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+      initial={{ opacity: 0, y: -15, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 15, scale: 0.95 }}
-      className="absolute top-full right-0 mt-4 bg-white/90 backdrop-blur-2xl border border-gray-100 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.1)] w-[280px] z-50 origin-top"
+      exit={{ opacity: 0, y: -15, scale: 0.95 }}
+      className="absolute bottom-full right-0 mb-4 bg-white/90 backdrop-blur-2xl border border-gray-100 rounded-3xl p-6 shadow-[0_-20px_60px_rgba(0,0,0,0.1)] w-[280px] z-50 origin-bottom flex flex-col font-sans"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between">
