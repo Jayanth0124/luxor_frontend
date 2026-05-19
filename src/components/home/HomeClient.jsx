@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import VehicleListings from './VehicleListings';
 import CampsiteListings from './CampsiteListings';
 import BlogSection from './BlogSection';
 
-/* ── Category quick links ──────────────────────────────────────── */
+/* ── Category Quick Links ──────────────────────────────────────── */
 const CATEGORIES = [
   {
     label: 'Book Vehicle',
@@ -100,32 +101,127 @@ const CATEGORIES = [
   },
 ];
 
+/* ── Floating Capsule Component ────────────────────────────────── */
+function CategoryCapsule({ label, href, color, bg, icon }) {
+  // Split label to stack nicely inside the pill shape
+  const words = label.split(' ');
 
+  return (
+    <Link href={href} className="snap-center shrink-0 focus:outline-none outline-none">
+      <motion.div
+        initial="initial"
+        whileHover="hover"
+        whileTap={{ scale: 0.95 }}
+        variants={{
+          initial: {
+            y: 0,
+            borderColor: "rgba(243, 244, 246, 1)", // gray-100
+            boxShadow: "0px 10px 30px -10px rgba(0,0,0,0.03)",
+            backgroundColor: "rgba(255,255,255,0.95)"
+          },
+          hover: {
+            y: -8,
+            borderColor: `${color}40`, // Soft border matching accent color
+            boxShadow: `0px 24px 40px -12px ${color}30`,
+            backgroundColor: "rgba(255,255,255,1)",
+            transition: { type: "spring", stiffness: 400, damping: 25 }
+          }
+        }}
+        className="group relative flex flex-col items-center justify-start gap-3 w-[100px] h-[130px] sm:w-[106px] sm:h-[136px] lg:w-[116px] lg:h-[144px] pt-5 lg:pt-6 rounded-[2.5rem] backdrop-blur-xl border transition-colors z-10 overflow-hidden"
+      >
+        {/* Inner Ambient Glow on Hover */}
+        <motion.div
+          variants={{
+            initial: { opacity: 0 },
+            hover: { opacity: 1 }
+          }}
+          className="absolute top-0 left-0 w-full h-1/2 opacity-20 blur-[20px] rounded-t-[2.5rem] pointer-events-none transition-opacity duration-500"
+          style={{ backgroundImage: `linear-gradient(to bottom, ${color}, transparent)` }}
+        />
+
+        {/* Floating Indicator Dot */}
+        <motion.div
+          variants={{
+            initial: { y: 10, opacity: 0, scale: 0.5 },
+            hover: { y: 0, opacity: 1, scale: 1 }
+          }}
+          className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: color, boxShadow: `0 0 10px ${color}` }}
+        />
+
+        {/* Icon Container */}
+        <div className="relative flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-full z-10">
+
+          {/* Hover Pulse Ring (Activates ONLY on hover) */}
+          <motion.div
+            variants={{
+              initial: { scale: 1, opacity: 0 },
+              hover: {
+                scale: [1, 1.6, 1],
+                opacity: [0, 0.4, 0],
+                transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+              }
+            }}
+            className="absolute inset-0 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+
+          {/* Solid Icon Background */}
+          <div className="absolute inset-0 rounded-full transition-transform duration-300 group-hover:scale-[1.05]" style={{ backgroundColor: bg }} />
+
+          {/* Icon SVG */}
+          <motion.div
+            variants={{
+              initial: { scale: 1, rotate: 0 },
+              hover: { scale: 1.15, rotate: [0, -5, 5, 0], transition: { duration: 0.4 } }
+            }}
+            className="relative z-10 flex items-center justify-center"
+            style={{ color: color }}
+          >
+            {icon}
+          </motion.div>
+        </div>
+
+        {/* Label Typography */}
+        <span className="text-[10px] sm:text-[11px] font-bold text-gray-500 text-center leading-[1.2] tracking-wide group-hover:text-gray-900 transition-colors duration-300 z-10 px-2">
+          {words.map((word, i) => (
+            <span key={i} className="block">{word}</span>
+          ))}
+        </span>
+
+        {/* Animated Accent Line */}
+        <motion.div
+          variants={{
+            initial: { width: "0px", opacity: 0 },
+            hover: { width: "24px", opacity: 1 }
+          }}
+          className="absolute bottom-4 h-[3px] rounded-full"
+          style={{ backgroundColor: color }}
+        />
+      </motion.div>
+    </Link>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════════════ */
 
 export default function HomeClient() {
   return (
-    <div className="bg-white font-sans">
+    <div className="bg-white font-sans overflow-hidden">
 
-      {/* ── Category quick links ── */}
-      <section className="border-b border-gray-100 py-6 px-4 sm:px-6 md:px-12 xl:px-20 overflow-x-auto">
-        <div className="max-w-screen-xl mx-auto">
-          <div className="flex items-start gap-5 sm:gap-8 min-w-max sm:min-w-0 sm:grid sm:grid-cols-4 md:grid-cols-8">
-            {CATEGORIES.map(({ label, href, color, bg, icon }) => (
-              <Link key={label} href={href}
-                className="flex flex-col items-center gap-2 group shrink-0 sm:shrink"
-              >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 duration-200"
-                  style={{ backgroundColor: bg, color }}
-                >
-                  {icon}
-                </div>
-                <span className="text-[11px] font-semibold text-gray-600 text-center leading-tight whitespace-nowrap group-hover:text-gray-900 transition-colors">
-                  {label}
-                </span>
-              </Link>
+      {/* ── Floating Capsule Navigation Strip ── */}
+      <section className="relative w-full border-b border-gray-100 bg-gradient-to-b from-gray-50/40 to-white pt-4 pb-2">
+
+        {/* Subtle Ambient Background Lighting */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 left-[15%] w-[400px] h-[400px] bg-[#84cc16]/5 blur-[120px] rounded-full -translate-y-1/2" />
+          <div className="absolute top-1/2 right-[15%] w-[400px] h-[400px] bg-[#0ea5e9]/5 blur-[120px] rounded-full -translate-y-1/2" />
+        </div>
+
+        <div className="max-w-[1400px] mx-auto relative z-10">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 xl:gap-8 lg:justify-center overflow-x-auto snap-x snap-mandatory px-4 sm:px-6 md:px-12 xl:px-16 pb-10 pt-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {CATEGORIES.map((cat) => (
+              <CategoryCapsule key={cat.label} {...cat} />
             ))}
           </div>
         </div>
