@@ -127,33 +127,33 @@ const DUMMY_CAMPSITES = [
 
 function CampsitesContent() {
   const searchParams = useSearchParams();
-  const router       = useRouter();
+  const router = useRouter();
 
-  const [search, setSearch]   = useState(() => searchParams.get('search') || '');
-  const [state,  setState]    = useState(() => searchParams.get('state')  || '');
-  const [city,   setCity]     = useState(() => searchParams.get('city')   || '');
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
+  const [state, setState] = useState(() => searchParams.get('state') || '');
+  const [city, setCity] = useState(() => searchParams.get('city') || '');
   const [locationDisplay, setLocationDisplay] = useState(
     () => [searchParams.get('city'), searchParams.get('state')].filter(Boolean).join(', ') || searchParams.get('search') || ''
   );
-  const [nearMe, setNearMe]    = useState(false);
+  const [nearMe, setNearMe] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
 
   /* ── Parallax ── */
   const { scrollY } = useScroll();
-  const bgY     = useTransform(scrollY, [0, 600], ['0%', '25%']);
-  const textY   = useTransform(scrollY, [0, 600], ['0%', '12%']);
+  const bgY = useTransform(scrollY, [0, 600], ['0%', '25%']);
+  const textY = useTransform(scrollY, [0, 600], ['0%', '12%']);
   const searchY = useTransform(scrollY, [0, 600], ['0%', '6%']);
 
   /* ── TEMPORARY: use dummy data, remove this block and restore useQuery later ── */
-  const campsites  = DUMMY_CAMPSITES;
+  const campsites = DUMMY_CAMPSITES;
   const totalPages = 1;
-  const isLoading  = false;
+  const isLoading = false;
 
   const pushUrl = (s, st, ci) => {
     const params = new URLSearchParams();
-    if (s)  params.set('search', s);
-    if (st) params.set('state',  st);
-    if (ci) params.set('city',   ci);
+    if (s) params.set('search', s);
+    if (st) params.set('state', st);
+    if (ci) params.set('city', ci);
     router.replace(`/campsites?${params.toString()}`, { scroll: false });
   };
 
@@ -297,23 +297,21 @@ function CampsitesContent() {
       </section>
 
       {/* ── AUTO-SCROLL MARQUEE ── */}
-      <section className="relative w-full py-10 md:py-12 bg-white overflow-hidden border-b border-gray-100 flex flex-col items-center justify-center z-10">
+      <section className="relative w-full py-10 md:py-12 bg-[#fcfcfc] overflow-hidden border-b border-gray-100 flex flex-col items-center justify-center z-10">
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-5 text-center">
-          Explore India's Most Scenic Camp Spots
+          Explore India's Most Scenic Spots
         </p>
-        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-r from-[#fcfcfc] to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-l from-[#fcfcfc] to-transparent z-20 pointer-events-none" />
         <div className="flex w-full overflow-hidden">
           <motion.div
             className="flex whitespace-nowrap items-center w-max"
             animate={{ x: ['0%', '-50%'] }}
-            transition={{ ease: 'linear', duration: 38, repeat: Infinity }}
+            transition={{ ease: 'linear', duration: 45, repeat: Infinity }}
           >
             {[
-              'Spiti Valley', 'Chopta', 'Rishikesh', 'Coorg', 'Munnar', 'Auli', 'Ziro', 'Tirthan',
-              'Kasol', 'Bir Billing', 'Dandeli', 'Wayanad', 'Valley of Flowers', 'Nainital', 'Dhanaulti', 'Hampi',
-              'Spiti Valley', 'Chopta', 'Rishikesh', 'Coorg', 'Munnar', 'Auli', 'Ziro', 'Tirthan',
-              'Kasol', 'Bir Billing', 'Dandeli', 'Wayanad', 'Valley of Flowers', 'Nainital', 'Dhanaulti', 'Hampi',
+              'Pangong Tso', 'Kheerganga', 'Triund', 'Sandakphu', 'Mawlynnong', 'Chandratal', 'Tso Moriri', 'Gurez Valley', 'Zanskar', 'Nanda Devi', 'Tirthan Valley', 'Chopta', 'Auli', 'Kodaikanal', 'Munnar', 'Spiti',
+              'Pangong Tso', 'Kheerganga', 'Triund', 'Sandakphu', 'Mawlynnong', 'Chandratal', 'Tso Moriri', 'Gurez Valley', 'Zanskar', 'Nanda Devi', 'Tirthan Valley', 'Chopta', 'Auli', 'Kodaikanal', 'Munnar', 'Spiti'
             ].map((dest, i) => (
               <div key={i} className="flex items-center">
                 <span className="text-lg md:text-2xl font-black text-gray-900 uppercase tracking-tighter px-6 md:px-12 hover:text-[#84cc16] hover:scale-110 transition-all duration-300 cursor-default select-none">
@@ -326,71 +324,112 @@ function CampsitesContent() {
         </div>
       </section>
 
-      {/* ── CATALOG ── */}
-      <section className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-12 xl:px-20 pt-8 md:pt-12 pb-32">
+      {/* ── ADVANCED CATALOG UI (Beyond Limits) ── */}
+      <section className="relative min-h-[80vh] w-full overflow-hidden pt-20 pb-40">
 
-        {/* Heading */}
-        <div className="text-center mb-0 md:mb-4">
-          <div className="inline-flex items-center gap-2 bg-[#84cc16]/10 border border-[#84cc16]/20 text-[#84cc16] text-[11px] font-black uppercase tracking-[0.2em] px-5 py-2.5 rounded-full mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#84cc16] animate-pulse" />
-            {isLoading ? 'Searching...' : `${campsites.length} campsite${campsites.length !== 1 ? 's' : ''} available`}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-            {(search || city || state)
-              ? <><span className="text-gray-400 font-light">Results for </span>{search || locationDisplay}</>
-              : <>Our <span className="text-[#84cc16]">Campsites</span></>
-            }
-          </h2>
-          <div className="flex items-center justify-center gap-3 mt-5">
-            <span className="w-12 h-[2px] bg-gray-200 rounded-full" />
-            <span className="text-gray-300">✦</span>
-            <span className="w-12 h-[2px] bg-gray-200 rounded-full" />
-          </div>
+        {/* Deep Background Ambient Orbs (Parallaxing) */}
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 150, repeat: Infinity, ease: 'linear' }}
+            className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] bg-gradient-to-r from-[#84cc16]/10 to-transparent rounded-full blur-[120px] opacity-70"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 180, repeat: Infinity, ease: 'linear' }}
+            className="absolute top-[30%] -right-[10%] w-[50vw] h-[50vw] bg-gradient-to-l from-emerald-600/5 to-transparent rounded-full blur-[150px] opacity-60"
+          />
         </div>
 
-        {/* Active filters */}
-        {(city || state) && (
-          <div className="flex items-center gap-2 mt-6 mb-2 flex-wrap justify-center">
-            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Filters:</span>
-            {city  && <span className="text-xs bg-lime-50 text-lime-700 border border-lime-200 rounded-full px-3 py-1 font-bold">{city}</span>}
-            {state && <span className="text-xs bg-lime-50 text-lime-700 border border-lime-200 rounded-full px-3 py-1 font-bold">{state}</span>}
-            <button onClick={handleClear} className="text-sm font-bold text-[#84cc16] hover:text-[#74b814] ml-1">Clear All</button>
-          </div>
-        )}
+        <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 xl:px-20">
 
-        {/* Grid Container */}
-        <div className="bg-white rounded-[2.5rem] lg:rounded-[3.5rem] shadow-sm border border-gray-100 p-6 sm:p-10 lg:p-16 mt-10 min-h-[50vh]">
+          {/* Epic Typographic Header */}
+          <div className="relative text-center mb-16 md:mb-24">
+            <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-[0.02]">
+              <h2 className="text-[12vw] font-black uppercase tracking-tighter whitespace-nowrap leading-none mt-10">Wilderness</h2>
+            </div>
+            <h2 className="relative text-5xl md:text-7xl lg:text-[5rem] font-black text-gray-900 tracking-[-0.04em] leading-[0.95]">
+              {(search || city || state)
+                ? <>Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#84cc16] to-emerald-600">Destinations</span></>
+                : <>Untamed <br className="hidden md:block" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#84cc16] to-emerald-600">Sanctuaries</span></>
+              }
+            </h2>
+            <p className="mt-6 text-gray-500 font-bold tracking-widest text-xs md:text-sm max-w-xl mx-auto uppercase">
+              Transcend the ordinary. Immerse in nature's ultimate luxury.
+            </p>
+          </div>
+
+          {/* Sticky Floating Status Pill */}
+          <div className="sticky top-24 z-40 flex justify-center mb-16 pointer-events-none">
+            <div className="pointer-events-auto bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.06)] rounded-full px-5 py-2.5 flex items-center gap-4 transition-all">
+              <div className="flex items-center gap-2 pr-4 border-r border-gray-200/50">
+                <span className="relative flex w-2 h-2">
+                  <span className="animate-ping absolute inset-0 rounded-full bg-[#84cc16] opacity-75"></span>
+                  <span className="relative rounded-full w-2 h-2 bg-[#84cc16]"></span>
+                </span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-900">
+                  {isLoading ? 'Scanning...' : 'Live Catalog'}
+                </span>
+              </div>
+              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-3">
+                <span>{campsites.length} Results</span>
+                {(city || state || search) && (
+                  <button onClick={handleClear} className="text-[#84cc16] hover:text-gray-900 transition-colors">Clear Filters</button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Standard Premium Aligned Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-[450px] rounded-[2rem] bg-gray-100 animate-pulse" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-[480px] rounded-[2.5rem] bg-gray-200/50 animate-pulse backdrop-blur-sm" />
               ))}
             </div>
           ) : campsites.length === 0 ? (
-            <div className="text-center py-32">
-              <p className="text-gray-500 text-xl font-bold mb-6">No campsites match your search.</p>
-              <button onClick={handleClear} className="px-8 py-4 bg-gray-900 text-white font-bold rounded-full shadow-lg hover:bg-black transition-all">
-                Reset Search
+            <div className="text-center py-32 bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white shadow-xl max-w-3xl mx-auto">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <p className="text-gray-900 text-2xl font-black mb-2 tracking-tight">No Sanctuaries Found</p>
+              <p className="text-gray-500 font-medium mb-8">Try adjusting your filters to discover more hidden gems.</p>
+              <button onClick={handleClear} className="px-8 py-4 bg-[#84cc16] text-white font-black uppercase tracking-widest text-xs rounded-full shadow-[0_10px_30px_rgba(132,204,22,0.3)] hover:scale-105 transition-all">
+                Reset Exploration
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-              {campsites.map((c) => <CampsiteCard key={c._id} campsite={c} />)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {campsites.map((c) => (
+                <motion.div
+                  key={c._id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                >
+                  <CampsiteCard campsite={c} />
+                </motion.div>
+              ))}
             </div>
           )}
 
-          {/* Pagination */}
+          {/* Futuristic Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-16">
-              <button className="w-12 h-12 flex items-center justify-center bg-white border border-gray-200 text-gray-900 rounded-full disabled:opacity-30 hover:border-gray-900 transition-all font-bold shadow-sm">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            <div className="flex items-center justify-center gap-6 mt-32 relative z-20">
+              <button className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
               </button>
-              <span className="text-sm font-black text-gray-900 tracking-widest uppercase">1 / {totalPages}</span>
-              <button className="w-12 h-12 flex items-center justify-center bg-white border border-gray-200 text-gray-900 rounded-full disabled:opacity-30 hover:border-gray-900 transition-all font-bold shadow-sm">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Page</span>
+                <span className="text-lg font-black text-gray-900 tracking-widest">{page} / {totalPages}</span>
+              </div>
+              <button className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </button>
             </div>
           )}
+
         </div>
       </section>
     </div>
@@ -400,8 +439,8 @@ function CampsitesContent() {
 export default function CampsitesPage() {
   return (
     <Suspense fallback={
-      <div className="bg-white min-h-screen pt-16 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#84cc16] border-t-transparent rounded-full animate-spin" />
+      <div className="bg-[#fcfcfc] min-h-screen pt-16 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#84cc16] border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <CampsitesContent />
