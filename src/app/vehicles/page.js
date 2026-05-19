@@ -45,60 +45,67 @@ function PremiumLightCard({ vehicle }) {
   const v = normalize(vehicle);
 
   return (
-    <Link href={`/vehicles/${v.slug}`} className="group block h-full">
-      <div className="bg-white rounded-[2rem] p-3 border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 h-full flex flex-col">
-        {/* Image */}
+    <Link href={`/vehicles/${v.slug}`} className="group block w-full h-full outline-none">
+      <div className="bg-white rounded-[2rem] p-3 border border-gray-100/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 h-full flex flex-col relative overflow-hidden">
+
+        {/* Top Image Container */}
         <div className="relative w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden bg-gray-50 mb-5">
           <Image
             src={v.imgSrc}
             alt={v.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
             unoptimized={v.imgSrc.startsWith('http')}
           />
-          {/* Badge */}
-          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-900 shadow-sm">
-            {v.category}
+
+          {/* Top Badges */}
+          <div className="absolute top-4 left-4 flex gap-2">
+            <div className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-900 shadow-sm">
+              {v.category}
+            </div>
           </div>
         </div>
 
-        {/* Details */}
+        {/* Card Content */}
         <div className="px-3 flex-1 flex flex-col">
-          <div className="mb-2">
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight leading-tight mb-1.5 group-hover:text-[#84cc16] transition-colors">{v.name}</h3>
+          {/* Header */}
+          <div className="mb-4">
+            <h3 className="text-xl md:text-[1.35rem] font-black text-gray-900 tracking-tight leading-tight mb-1.5 group-hover:text-[#84cc16] transition-colors line-clamp-1">
+              {v.name}
+            </h3>
             {v.location && (
-              <p className="text-sm text-gray-500 font-medium flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              <p className="text-xs text-gray-500 font-bold uppercase tracking-widest flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 {v.location}
               </p>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 my-4">
-            <span className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          {/* Clean Micro-UI Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="bg-gray-50 border border-gray-100 text-gray-600 px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
               {v.seats} Seats
             </span>
-            <span className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider text-gray-600">
+            <span className="bg-gray-50 border border-gray-100 text-gray-600 px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
               {v.transmission}
             </span>
-            <span className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider text-gray-600">
+            <span className="bg-gray-50 border border-gray-100 text-gray-600 px-2.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               {v.fuel}
             </span>
           </div>
 
-          <div className="mt-auto pt-5 border-t border-gray-50 flex items-center justify-between">
+          {/* Pricing Footer */}
+          <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
             <div>
-              {v.price != null ? (
-                <>
-                  <span className="text-2xl md:text-3xl font-black text-gray-900 leading-none tracking-tight">₹{Number(v.price).toLocaleString('en-IN')}</span>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 ml-1.5">/ day</span>
-                </>
-              ) : (
-                <span className="text-sm font-bold text-gray-500">Price on request</span>
-              )}
+              <span className="text-2xl font-black text-gray-900 tracking-tight">₹{Number(v.price).toLocaleString('en-IN')}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1.5">/ day</span>
             </div>
-            <div className="w-12 h-12 rounded-full bg-gray-50 group-hover:bg-[#84cc16] flex items-center justify-center transition-colors text-gray-400 group-hover:text-white">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+
+            <div className="w-10 h-10 rounded-full bg-gray-50 group-hover:bg-[#84cc16] flex items-center justify-center transition-colors duration-300 text-gray-400 group-hover:text-white">
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
             </div>
           </div>
         </div>
@@ -171,8 +178,108 @@ function VehiclesContent() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const vehicles = data?.vehicles ?? [];
-  const total = data?.total ?? 0;
+  const dummyVehicles = [
+    {
+      _id: '1',
+      name: 'Mercedes-Benz G-Class',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=1000&auto=format&fit=crop',
+      location: 'Manali, HP',
+      passengers: 5,
+      transmission: 'Automatic',
+      fuel: 'Petrol',
+      price: 15000,
+      isNew: true
+    },
+    {
+      _id: '2',
+      name: 'Range Rover Velar',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop',
+      location: 'Leh, Ladakh',
+      passengers: 5,
+      transmission: 'Automatic',
+      fuel: 'Diesel',
+      price: 18000,
+      isNew: false
+    },
+    {
+      _id: '3',
+      name: 'Ford Bronco Wildtrak',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1629897048514-3dd7414ca71a?q=80&w=1000&auto=format&fit=crop',
+      location: 'Spiti Valley, HP',
+      passengers: 4,
+      transmission: 'Automatic',
+      fuel: 'Petrol',
+      price: 12000,
+      isNew: true
+    },
+    {
+      _id: '4',
+      name: 'Luxor Grand Caravan',
+      type: 'caravan',
+      imgSrc: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=80&w=1000&auto=format&fit=crop',
+      location: 'Rishikesh, UK',
+      passengers: 8,
+      transmission: 'Manual',
+      fuel: 'Diesel',
+      price: 25000,
+      isNew: false
+    },
+    {
+      _id: '5',
+      name: 'Porsche Macan GTS',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1503376713292-15f187a514d8?q=80&w=1000&auto=format&fit=crop',
+      location: 'Goa, India',
+      passengers: 5,
+      transmission: 'Automatic',
+      fuel: 'Petrol',
+      price: 22000,
+      isNew: true
+    },
+    {
+      _id: '6',
+      name: 'Jeep Wrangler Rubicon',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000&auto=format&fit=crop',
+      location: 'Coorg, KA',
+      passengers: 4,
+      transmission: 'Automatic',
+      fuel: 'Diesel',
+      price: 11000,
+      isNew: false
+    },
+    {
+      _id: '7',
+      name: 'Airstream Globetrotter',
+      type: 'caravan',
+      imgSrc: 'https://images.unsplash.com/photo-1627522460108-215683bd9959?q=80&w=1000&auto=format&fit=crop',
+      location: 'Jaisalmer, RJ',
+      passengers: 6,
+      transmission: 'Manual',
+      fuel: 'Diesel',
+      price: 19000,
+      isNew: true
+    },
+    {
+      _id: '8',
+      name: 'Toyota Land Cruiser',
+      type: 'suv',
+      imgSrc: 'https://images.unsplash.com/photo-1575822365922-349f4bcebe60?q=80&w=1000&auto=format&fit=crop',
+      location: 'Munnar, KL',
+      passengers: 7,
+      transmission: 'Automatic',
+      fuel: 'Diesel',
+      price: 21000,
+      isNew: false
+    }
+  ];
+
+  // TEMPORARY DUMMY DATA INJECTION
+  const vehicles = dummyVehicles;
+  const total = dummyVehicles.length;
   const totalPages = Math.ceil(total / limit);
 
   const handleSearch = (e) => {
@@ -223,18 +330,18 @@ function VehiclesContent() {
 
       {/* ── IMMERSIVE DEPTH PARALLAX HERO ── */}
       <section className="relative overflow-hidden flex flex-col items-center justify-center pt-32 pb-24 min-h-[500px] lg:min-h-[55vh] lg:max-h-[700px]">
-        
+
         {/* Layer 1 (Deepest): Background Parallax */}
-        <motion.div 
+        <motion.div
           className="absolute inset-x-0 -top-[20%] -bottom-[20%] z-0 pointer-events-none"
           style={{ y: bgY }}
         >
-          <Image 
-            src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=2500&auto=format&fit=crop" 
-            alt="Scenic Mountain Road" 
-            fill 
-            className="object-cover" 
-            unoptimized 
+          <Image
+            src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=2500&auto=format&fit=crop"
+            alt="Scenic Mountain Road"
+            fill
+            className="object-cover"
+            unoptimized
             priority
           />
           {/* Light black overlay for perfect white text contrast */}
@@ -244,7 +351,7 @@ function VehiclesContent() {
         </motion.div>
 
         {/* Layer 2 (Middle): Typography Parallax */}
-        <motion.div 
+        <motion.div
           className="relative z-10 w-full max-w-4xl mx-auto px-4 text-center mt-12 mb-16"
           style={{ y: textY }}
         >
@@ -258,7 +365,7 @@ function VehiclesContent() {
         </motion.div>
 
         {/* Layer 3 (Foreground): Integrated Search Console */}
-        <motion.div 
+        <motion.div
           className="relative z-20 w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-12"
           style={{ y: searchY }}
         >
@@ -353,8 +460,69 @@ function VehiclesContent() {
         </motion.div>
       </section>
 
+      {/* ── PREMIUM DESTINATIONS MARQUEE (Auto-Scroll) ── */}
+      <section className="relative w-full py-12 md:py-16 bg-white overflow-hidden border-b border-gray-100 flex flex-col items-center justify-center shadow-[0_20px_40px_-20px_rgba(0,0,0,0.03)] z-10">
+
+        {/* Subtle title above the strip */}
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-6 text-center">
+          Explore India's Most Breathtaking Routes
+        </p>
+
+        {/* Fading edges for seamless loop effect */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-48 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-48 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none" />
+
+        <div className="flex w-full overflow-hidden">
+          <motion.div
+            className="flex whitespace-nowrap items-center w-max"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ ease: "linear", duration: 40, repeat: Infinity }}
+          >
+            {[
+              "Leh Ladakh", "Manali", "Spiti Valley", "Rishikesh", "Goa", "Coorg", "Munnar", "Ooty",
+              "Jaipur", "Udaipur", "Jaisalmer", "Meghalaya", "Tawang", "Andaman", "Darjeeling", "Srinagar",
+              /* Duplicate array for seamless infinite scroll */
+              "Leh Ladakh", "Manali", "Spiti Valley", "Rishikesh", "Goa", "Coorg", "Munnar", "Ooty",
+              "Jaipur", "Udaipur", "Jaisalmer", "Meghalaya", "Tawang", "Andaman", "Darjeeling", "Srinagar"
+            ].map((dest, i) => (
+              <div key={i} className="flex items-center">
+                <span className="text-xl md:text-3xl font-black text-gray-900 uppercase tracking-tighter px-8 md:px-16 hover:text-[#84cc16] hover:scale-110 transition-all duration-300 cursor-default select-none">
+                  {dest}
+                </span>
+                <span className="text-[#84cc16] text-opacity-30 text-xl">✦</span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── VEHICLES GRID ── */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 pt-16 md:pt-24 pb-32">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-10 pb-32">
+
+        {/* ── CATALOG HEADING ── */}
+        <div className="text-center mb-0 md:mb-4">
+          {/* Green accent live-count pill */}
+          <div className="inline-flex items-center gap-2 bg-[#84cc16]/10 border border-[#84cc16]/20 text-[#84cc16] text-[11px] font-black uppercase tracking-[0.2em] px-5 py-2.5 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#84cc16] animate-pulse"></span>
+            {isLoading ? 'Searching...' : `${vehicles.length} vehicle${vehicles.length !== 1 ? 's' : ''} available`}
+          </div>
+
+          {/* Main title */}
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+            {(search || city || state)
+              ? <><span className="text-gray-400 font-light">Results for </span>{search || locationDisplay}</>
+              : <>Our <span className="text-[#84cc16]">Fleet</span></>
+            }
+          </h2>
+
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <span className="w-12 h-[2px] bg-gray-200 rounded-full"></span>
+            <span className="text-gray-300 text-sm">✦</span>
+            <span className="w-12 h-[2px] bg-gray-200 rounded-full"></span>
+          </div>
+        </div>
+
         <div className="bg-white rounded-[2.5rem] lg:rounded-[3.5rem] shadow-sm border border-gray-100 p-6 sm:p-10 lg:p-16 min-h-[50vh]">
 
           {/* Active Filters */}
@@ -369,7 +537,7 @@ function VehiclesContent() {
 
           {/* Standard Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="rounded-[2rem] bg-gray-100 animate-pulse h-[450px]" />
               ))}
@@ -382,11 +550,9 @@ function VehiclesContent() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-              {vehicles.map((v) => (
-                <div key={v._id}>
-                  <PremiumLightCard vehicle={v} />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+              {vehicles.map((v, index) => (
+                <PremiumLightCard key={v._id} vehicle={v} index={index} />
               ))}
             </div>
           )}
