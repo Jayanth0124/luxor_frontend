@@ -1,57 +1,61 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { likeComment } from '@/services/blog.service';
 import CommentForm from './CommentForm';
 
 export default function Comment({ comment, blogId, user, isAuth }) {
-  const qc = useQueryClient();
   const [showReply, setShowReply] = useState(false);
 
-  const likeMut = useMutation({
-    mutationFn: () => likeComment(comment._id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['blog-comments', blogId] }),
-  });
-
-  const displayName = comment.user?.name || comment.guestName || 'Anonymous';
+  const displayName = comment.user?.name || comment.guestName || 'ANONYMOUS';
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-full bg-[#84cc16]/10 flex items-center justify-center text-[#84cc16] font-bold text-sm shrink-0">
-          {displayName[0]?.toUpperCase()}
+    <div className="space-y-4">
+      <div className="flex items-start gap-4">
+        {/* Avatar Radar Ping */}
+        <div className="relative w-10 h-10 shrink-0 flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#84cc16]/10 border border-[#84cc16]/30 rounded-full" />
+          <div className="absolute inset-0 bg-[#84cc16]/20 rounded-full animate-ping opacity-40" />
+          <span className="relative z-10 text-[#84cc16] font-black text-xs uppercase">
+            {displayName[0]?.toUpperCase()}
+          </span>
         </div>
+
+        {/* Comment Box */}
         <div className="flex-1">
-          <div className="bg-gray-50 rounded-2xl rounded-tl-none px-4 py-3">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-semibold text-gray-800">{displayName}</span>
-              <span className="text-xs text-gray-400">
-                {new Date(comment.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+          <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gray-50 rounded-full blur-2xl -z-10" />
+            <div className="flex flex-wrap items-center gap-3 mb-3 relative z-10">
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">{displayName}</span>
+              <span className="w-4 h-[1px] bg-gray-200" />
+              <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest">
+                POSTED ON {new Date(comment.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}
               </span>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed">{comment.content}</p>
+            <p className="text-sm text-gray-600 leading-relaxed font-medium relative z-10">{comment.content}</p>
           </div>
-          <div className="flex items-center gap-3 mt-1.5 px-1">
+          
+          {/* Action Row */}
+          <div className="flex items-center gap-4 mt-2 px-2">
             <button
-              onClick={() => likeMut.mutate()}
-              className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#84cc16] transition-colors"
+              className="flex items-center gap-1.5 text-[9px] font-mono text-gray-400 uppercase tracking-widest hover:text-[#84cc16] transition-colors group"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.25M9 21H5.25a2.25 2.25 0 01-2.25-2.25V10.5a2.25 2.25 0 012.25-2.25H9" />
+              <svg className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
               </svg>
-              {comment.likes > 0 ? comment.likes : ''} Like
+              LIKE {comment.likes > 0 ? `[${comment.likes}]` : ''}
             </button>
+            <span className="text-gray-300">|</span>
             <button
               onClick={() => setShowReply((v) => !v)}
-              className="text-xs text-gray-400 hover:text-[#84cc16] transition-colors"
+              className="text-[9px] font-mono text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors"
             >
-              Reply
+              REPLY
             </button>
           </div>
 
+          {/* Reply form */}
           {showReply && (
-            <div className="mt-3 pl-2">
+            <div className="mt-4 pl-4 border-l-2 border-gray-100">
               <CommentForm
                 blogId={blogId}
                 parentId={comment._id}
@@ -62,19 +66,24 @@ export default function Comment({ comment, blogId, user, isAuth }) {
             </div>
           )}
 
+          {/* Nested replies */}
           {comment.replies?.length > 0 && (
-            <div className="mt-3 pl-4 border-l-2 border-gray-100 space-y-3">
+            <div className="mt-4 pl-6 border-l border-dashed border-gray-200 space-y-4 relative">
+              {/* Connector line for nested replies */}
+              <div className="absolute top-0 bottom-0 left-0 w-px bg-gradient-to-b from-gray-200 to-transparent" />
+              
               {comment.replies.map((reply) => (
-                <div key={reply._id} className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-xs shrink-0">
+                <div key={reply._id} className="flex items-start gap-3 relative">
+                  <div className="absolute top-4 -left-6 w-4 h-px bg-gray-200" />
+                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 font-black text-[10px] shrink-0 uppercase shadow-sm">
                     {(reply.user?.name || reply.guestName || 'A')[0]?.toUpperCase()}
                   </div>
-                  <div className="flex-1 bg-gray-50 rounded-2xl rounded-tl-none px-4 py-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-semibold text-gray-800">{reply.user?.name || reply.guestName || 'Anonymous'}</span>
-                      <span className="text-xs text-gray-400">{new Date(reply.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                  <div className="flex-1 bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-gray-800">{reply.user?.name || reply.guestName || 'ANONYMOUS'}</span>
+                      <span className="text-[8px] font-mono text-gray-500">{new Date(reply.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</span>
                     </div>
-                    <p className="text-sm text-gray-700 leading-relaxed">{reply.content}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed font-medium">{reply.content}</p>
                   </div>
                 </div>
               ))}
