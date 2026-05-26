@@ -196,7 +196,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               onClose={() => setActiveDropdown('end')}
               selectedDate={pickupDate}
               onSelect={setPickupDate}
-              showTime={tab === 'vehicle'}
+              showTime={true}
             />
           </AnimatePresence>
         </div>
@@ -224,7 +224,7 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
               selectedDate={dropoffDate}
               onSelect={setDropoffDate}
               minDate={pickupDate}
-              showTime={tab === 'vehicle'}
+              showTime={true}
             />
           </AnimatePresence>
         </div>

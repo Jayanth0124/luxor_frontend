@@ -152,6 +152,61 @@ function GridCard({ post }) {
   );
 }
 
+const DUMMY_POSTS = [
+  {
+    _id: '1',
+    slug: 'himalayan-ascent',
+    title: 'The Himalayan Ascent',
+    subtitle: 'A Journey Beyond the Clouds',
+    excerpt: 'We pushed our luxury SUVs to their limits traversing the treacherous Spiti Valley roads, discovering untamed beauty at 14,000 feet. The air grows thin, but the engine roars louder.',
+    category: 'Expedition',
+    type: 'blog',
+    coverImage: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2000&auto=format&fit=crop',
+    authorName: 'Luxor Team',
+    publishedAt: '2023-10-15T00:00:00.000Z',
+    readTime: 8,
+  },
+  {
+    _id: '2',
+    slug: 'coastal-drive-goa',
+    title: 'Chasing Sunsets',
+    subtitle: 'The Ultimate Coastal Drive',
+    excerpt: 'A 500km journey along the Konkan coast in our premium caravans, exploring hidden beaches and dense mangrove forests. Salt in the air and freedom on the dashboard.',
+    category: 'Travel Notes',
+    type: 'vlog',
+    coverImage: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?q=80&w=2000&auto=format&fit=crop',
+    authorName: 'Sarah Jenkins',
+    publishedAt: '2023-09-28T00:00:00.000Z',
+    readTime: 5,
+  },
+  {
+    _id: '3',
+    slug: 'desert-safari-thar',
+    title: 'Golden Dunes of Thar',
+    subtitle: 'Navigating the Unforgiving Sands',
+    excerpt: 'Surviving the extreme heat and unpredictable sands of the Thar Desert. A true test of our 4x4 expedition vehicles against nature\'s harshest playground.',
+    category: 'Field Report',
+    type: 'blog',
+    coverImage: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000&auto=format&fit=crop',
+    authorName: 'Luxor Team',
+    publishedAt: '2023-11-05T00:00:00.000Z',
+    readTime: 12,
+  },
+  {
+    _id: '4',
+    slug: 'forest-canopy-coorg',
+    title: 'Into the Emerald Canopy',
+    subtitle: 'Camping in India\'s Coffee Country',
+    excerpt: 'Camping under the dense, rain-soaked canopy of the Western Ghats. A journey into the heart of India\'s coffee country where the mist never truly lifts.',
+    category: 'Expedition',
+    type: 'vlog',
+    coverImage: 'https://images.unsplash.com/photo-1516912481808-3406841bd33c?q=80&w=2000&auto=format&fit=crop',
+    authorName: 'Alex Mercer',
+    publishedAt: '2023-12-10T00:00:00.000Z',
+    readTime: 6,
+  }
+];
+
 /* ── Skeleton loaders ───────────────────────────────────────────── */
 function Skeleton({ className }) {
   return <div className={`animate-pulse bg-gray-100 rounded-2xl ${className}`} />;
@@ -159,15 +214,8 @@ function Skeleton({ className }) {
 
 /* ── Main section ───────────────────────────────────────────────── */
 export default function BlogSection() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getPosts({ page: 1, limit: 6 })
-      .then((d) => setPosts(d?.posts ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  const [posts] = useState(DUMMY_POSTS);
+  const [loading] = useState(false);
 
   if (!loading && posts.length === 0) return null;
 

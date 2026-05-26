@@ -13,7 +13,9 @@ for (let i = 8; i <= 22; i++) { // 8 AM to 10 PM
 export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSelect, minDate, showTime = true }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedTime, setSelectedTime] = useState('10:00 AM');
+  const [placement, setPlacement] = useState('up');
   const timeScrollRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (selectedDate && selectedDate.includes(' ')) {
@@ -26,11 +28,59 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
     if (isOpen && timeScrollRef.current && showTime) {
       const selectedIndex = TIME_SLOTS.indexOf(selectedTime);
       if (selectedIndex !== -1) {
-        const itemWidth = 84;
-        timeScrollRef.current.scrollLeft = (selectedIndex * itemWidth) - 100;
+        const itemWidth = 60; // Adjusted for smaller time pill width
+        timeScrollRef.current.scrollLeft = (selectedIndex * itemWidth) - 80;
       }
     }
   }, [isOpen, selectedTime, showTime]);
+
+  useEffect(() => {
+    const handlePositioning = () => {
+      if (isOpen && containerRef.current) {
+        const parent = containerRef.current.parentNode;
+        if (parent) {
+          const parentRect = parent.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - parentRect.bottom;
+          const spaceAbove = parentRect.top;
+          const requiredSpace = showTime ? 320 : 250;
+          
+          if (spaceBelow < requiredSpace && spaceAbove > spaceBelow) {
+            setPlacement('up');
+          } else {
+            setPlacement('down');
+          }
+        }
+      }
+    };
+
+    handlePositioning();
+    window.addEventListener('resize', handlePositioning);
+    window.addEventListener('scroll', handlePositioning, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', handlePositioning);
+      window.removeEventListener('scroll', handlePositioning);
+    };
+  }, [isOpen, showTime]);
+
+  // Click outside detector
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleDocumentClick = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        const parent = containerRef.current.parentNode;
+        if (parent && !parent.contains(e.target)) {
+          onClose();
+        }
+      }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [isOpen, onClose]);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfMonth = currentMonth.startOf('month').day();
@@ -44,8 +94,8 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
       onSelect(`${dateStr} ${selectedTime}`);
     } else {
       onSelect(dateStr);
+      if (onClose) onClose();
     }
-    if (onClose) onClose();
   };
 
   const handleTimeSelect = (timeStr, e) => {
@@ -58,49 +108,55 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
       const todayStr = dayjs().format('YYYY-MM-DD');
       onSelect(`${todayStr} ${timeStr}`);
     }
+    if (onClose) onClose();
   };
 
   const selectedDatePart = selectedDate ? selectedDate.split(' ')[0] : null;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -15, scale: 0.95 }}
+      ref={containerRef}
+      initial={{ opacity: 0, y: placement === 'up' ? 10 : -10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -15, scale: 0.95 }}
+      exit={{ opacity: 0, y: placement === 'up' ? 10 : -10, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="absolute bottom-full left-0 mb-4 bg-white/80 backdrop-blur-3xl border border-white/40 rounded-[1.5rem] p-4 shadow-[0_-30px_60px_-10px_rgba(0,0,0,0.15)] w-[280px] z-50 origin-bottom overflow-hidden flex flex-col font-sans ring-1 ring-black/5"
+      className={`absolute left-0 bg-white/80 backdrop-blur-3xl border border-white/40 rounded-2xl p-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] w-[240px] z-50 overflow-hidden flex flex-col font-sans ring-1 ring-black/5 ${
+        placement === 'up' 
+          ? 'bottom-full mb-3 origin-bottom shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.15)]' 
+          : 'top-full mt-3 origin-top shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)]'
+      }`}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* ── Unique Header Design ── */}
-      <div className="flex justify-between items-center mb-4 px-1">
-        <span className="font-black text-gray-900 text-lg tracking-tight">{currentMonth.format('MMMM YYYY')}</span>
+      {/* ── Header ── */}
+      <div className="flex justify-between items-center mb-3 px-1">
+        <span className="font-black text-gray-900 text-sm tracking-tight">{currentMonth.format('MMM YYYY')}</span>
         <div className="flex items-center gap-1 bg-gray-100/50 rounded-full p-0.5 border border-gray-200/50">
           <button
             type="button"
             onClick={() => setCurrentMonth(currentMonth.subtract(1, 'month'))}
-            className="w-7 h-7 rounded-full hover:bg-white flex items-center justify-center transition-all shadow-sm text-gray-500 hover:text-gray-900"
+            className="w-6 h-6 rounded-full hover:bg-white flex items-center justify-center transition-all shadow-sm text-gray-500 hover:text-gray-900"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
           <button
             type="button"
             onClick={() => setCurrentMonth(currentMonth.add(1, 'month'))}
-            className="w-7 h-7 rounded-full hover:bg-white flex items-center justify-center transition-all shadow-sm text-gray-500 hover:text-gray-900"
+            className="w-6 h-6 rounded-full hover:bg-white flex items-center justify-center transition-all shadow-sm text-gray-500 hover:text-gray-900"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>
         </div>
       </div>
 
       {/* ── Days of Week ── */}
-      <div className="grid grid-cols-7 gap-y-2 text-center mb-1.5">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
-          <div key={i} className="text-[9px] font-black uppercase tracking-widest text-[#84cc16] opacity-80">{d}</div>
+      <div className="grid grid-cols-7 gap-y-1 text-center mb-1">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+          <div key={i} className="text-[8px] font-black uppercase tracking-widest text-[#84cc16] opacity-80">{d}</div>
         ))}
       </div>
 
-      {/* ── Premium Calendar Grid ── */}
-      <div className="grid grid-cols-7 gap-1 text-center mb-3">
+      {/* ── Calendar Grid ── */}
+      <div className="grid grid-cols-7 gap-0.5 text-center mb-2">
         {blanks.map((_, i) => <div key={`blank-${i}`} />)}
         {days.map(day => {
           const date = currentMonth.date(day);
@@ -117,8 +173,9 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
               type="button"
               disabled={disabled}
               onClick={() => handleDateSelect(dateStr)}
-              className={`h-8 w-full rounded-lg flex items-center justify-center text-xs font-semibold transition-all duration-300 relative ${isSelected
-                  ? 'bg-gradient-to-br from-[#84cc16] to-[#65a30d] text-white shadow-[0_4px_10px_rgba(132,204,22,0.3)] scale-105 z-10 border border-[#84cc16]'
+              // Reduced button height (h-6) and text size (text-[11px])
+              className={`h-6 w-full rounded-md flex items-center justify-center text-[11px] font-semibold transition-all duration-300 relative ${isSelected
+                  ? 'bg-gradient-to-br from-[#84cc16] to-[#65a30d] text-white shadow-[0_2px_8px_rgba(132,204,22,0.4)] scale-105 z-10 border border-[#84cc16]'
                   : disabled
                     ? 'text-gray-300 cursor-not-allowed bg-transparent'
                     : isToday
@@ -132,19 +189,19 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
         })}
       </div>
 
-      {/* ── Horizontal Time Slider (Only shows if showTime is true) ── */}
+      {/* ── Time Slider ── */}
       {showTime && (
-        <div className="border-t border-gray-100 pt-3 pb-2 mb-1">
-          <div className="flex items-center gap-1.5 px-1 mb-2">
-            <svg className="w-3.5 h-3.5 text-[#84cc16]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <div className="border-t border-gray-100 pt-2 pb-1 mb-1">
+          <div className="flex items-center gap-1 px-1 mb-1.5">
+            <svg className="w-3 h-3 text-[#84cc16]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-[9px] font-black uppercase tracking-widest text-gray-800">Pick a Time</span>
+            <span className="text-[8px] font-black uppercase tracking-widest text-gray-800">Time</span>
           </div>
 
           <div
             ref={timeScrollRef}
-            className="flex gap-2 overflow-x-auto py-1.5 px-1 scrollbar-none scroll-smooth snap-x select-none"
+            className="flex gap-1.5 overflow-x-auto py-1 px-1 scrollbar-none scroll-smooth snap-x select-none"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {TIME_SLOTS.map((time) => {
@@ -154,8 +211,9 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
                   key={time}
                   type="button"
                   onClick={(e) => handleTimeSelect(time, e)}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0 snap-center border ${isSelected
-                      ? 'bg-gray-900 text-white border-transparent shadow-md scale-105'
+                  // Shrunk padding (px-2 py-1) and text (text-[10px])
+                  className={`px-2 py-1 rounded-md text-[10px] font-bold transition-all shrink-0 snap-center border ${isSelected
+                      ? 'bg-gray-900 text-white border-transparent shadow-sm scale-105'
                       : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'
                     }`}
                 >
@@ -167,12 +225,12 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
         </div>
       )}
 
-      {/* ── Footer Actions ── */}
-      <div className="pt-2 flex items-center justify-between px-1">
+      {/* ── Footer ── */}
+      <div className="pt-1 flex items-center justify-between px-1">
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onSelect(''); onClose(); }}
-          className="text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider"
+          className="text-[10px] font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider"
         >
           Clear
         </button>
@@ -183,7 +241,7 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
             const todayStr = dayjs().format('YYYY-MM-DD');
             handleDateSelect(todayStr);
           }}
-          className="text-xs font-black transition-colors uppercase tracking-widest text-[#84cc16] hover:text-[#65a30d]"
+          className="text-[10px] font-black transition-colors uppercase tracking-widest text-[#84cc16] hover:text-[#65a30d]"
         >
           Today
         </button>

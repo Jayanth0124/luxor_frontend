@@ -5,14 +5,84 @@ import Link from 'next/link';
 import CampsiteCard from './CampsiteCard';
 import { getCampsites } from '@/services/campsites.service';
 
-export default function CampsiteListings() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['public-campsites-featured'],
-    queryFn: () => getCampsites({ limit: 6 }),
-    staleTime: 5 * 60 * 1000,
-  });
+const DUMMY_CAMPSITES = [
+  {
+    _id: '1',
+    name: 'Starfall Meadow Camp',
+    slug: 'starfall-meadow-camp',
+    type: 'Glamping',
+    city: 'Manali',
+    state: 'HP',
+    price: 4500,
+    rating: 4.9,
+    reviews: 128,
+    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '2',
+    name: 'Spiti Wilderness Retreat',
+    slug: 'spiti-wilderness-retreat',
+    type: 'Camping',
+    city: 'Kaza',
+    state: 'HP',
+    price: 3200,
+    rating: 4.8,
+    reviews: 94,
+    image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '3',
+    name: 'Riverside Forest Lodge',
+    slug: 'riverside-forest-lodge',
+    type: 'Eco Stay',
+    city: 'Rishikesh',
+    state: 'UK',
+    price: 5800,
+    rating: 4.7,
+    reviews: 212,
+    image: 'https://images.unsplash.com/photo-1537225228614-56cc3556d7ed?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '4',
+    name: 'Coorg Canopy Nest',
+    slug: 'coorg-canopy-nest',
+    type: 'Treehouse',
+    city: 'Coorg',
+    state: 'KA',
+    price: 7200,
+    rating: 5.0,
+    reviews: 61,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '5',
+    name: 'Valley of Flowers Basecamp',
+    slug: 'valley-of-flowers-basecamp',
+    type: 'Camping',
+    city: 'Chamoli',
+    state: 'UK',
+    price: 2800,
+    rating: 4.6,
+    reviews: 77,
+    image: 'https://images.unsplash.com/photo-1516912481808-3406841bd33c?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '6',
+    name: 'Chopta Alpine Pods',
+    slug: 'chopta-alpine-pods',
+    type: 'Glamping',
+    city: 'Chopta',
+    state: 'UK',
+    price: 6100,
+    rating: 4.8,
+    reviews: 43,
+    image: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=80&w=1000&auto=format&fit=crop',
+  }
+];
 
-  const campsites = data?.campsites ?? [];
+export default function CampsiteListings() {
+  const campsites = DUMMY_CAMPSITES;
+  const isLoading = false;
 
   return (
     <section className="py-16 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 bg-[#f8fafc]">

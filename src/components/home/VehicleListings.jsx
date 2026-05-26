@@ -5,14 +5,84 @@ import Link from 'next/link';
 import VehicleCard from './VehicleCard';
 import { getVehicles } from '@/services/vehicles.service';
 
-export default function VehicleListings() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['public-vehicles-featured'],
-    queryFn: () => getVehicles({ limit: 6 }),
-    staleTime: 5 * 60 * 1000,
-  });
+const DUMMY_VEHICLES = [
+  {
+    _id: '1',
+    name: 'Luxor Expedition Defender',
+    category: 'Expedition SUV',
+    seatingCapacity: 5,
+    city: 'Manali',
+    state: 'HP',
+    price: 8500,
+    rating: 4.9,
+    reviews: 42,
+    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '2',
+    name: 'Overland Camper Cruiser',
+    category: 'Campervan',
+    seatingCapacity: 4,
+    city: 'Leh',
+    state: 'JK',
+    price: 12000,
+    rating: 4.8,
+    reviews: 29,
+    image: 'https://images.unsplash.com/photo-1527786356703-4b100091cd2c?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '3',
+    name: 'Desert Storm Safari 4x4',
+    category: 'Expedition SUV',
+    seatingCapacity: 7,
+    city: 'Jaisalmer',
+    state: 'RJ',
+    price: 9500,
+    rating: 4.7,
+    reviews: 56,
+    image: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '4',
+    name: 'Luxor Luxury Glamping Caravan',
+    category: 'Luxury Caravan',
+    seatingCapacity: 4,
+    city: 'Bengaluru',
+    state: 'KA',
+    price: 15000,
+    rating: 5.0,
+    reviews: 18,
+    image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '5',
+    name: 'Western Ghats Trailblazer',
+    category: 'Camping Caravan',
+    seatingCapacity: 5,
+    city: 'Coorg',
+    state: 'KA',
+    price: 11000,
+    rating: 4.8,
+    reviews: 31,
+    image: 'https://images.unsplash.com/photo-1513313778780-9ae4807465f2?q=80&w=1000&auto=format&fit=crop',
+  },
+  {
+    _id: '6',
+    name: 'Conqueror Overland Truck',
+    category: 'Heavy Duty Camper',
+    seatingCapacity: 3,
+    city: 'Shimla',
+    state: 'HP',
+    price: 18000,
+    rating: 4.9,
+    reviews: 15,
+    image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1000&auto=format&fit=crop',
+  }
+];
 
-  const vehicles = data?.vehicles ?? [];
+export default function VehicleListings() {
+  const vehicles = DUMMY_VEHICLES;
+  const isLoading = false;
 
   return (
     <section className="py-16 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 bg-white">

@@ -1,12 +1,14 @@
 import { UsersIcon, BoltIcon, ClockIcon, CheckBadgeIcon, ShieldCheckIcon } from '@/assets/icons';
 
-function Chip({ icon: Icon, label, value }) {
+function SpecCard({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2.5">
-      <Icon className="w-4 h-4 shrink-0 text-[#65a30d]" />
-      <div className="min-w-0">
-        <p className="text-[9px] font-black uppercase tracking-widest text-gray-400 leading-none mb-0.5">{label}</p>
-        <p className="text-xs font-bold text-gray-800 truncate">{value}</p>
+    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+      <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600">
+        <Icon className="w-5 h-5" />
+      </div>
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">{label}</p>
+        <p className="text-sm font-bold text-gray-900">{value}</p>
       </div>
     </div>
   );
@@ -15,20 +17,15 @@ function Chip({ icon: Icon, label, value }) {
 export default function VehicleSpecs({ vehicle }) {
   const v = vehicle;
   return (
-    <div className="mb-8">
-      <h2 className="text-base font-black text-gray-900 mb-3">Vehicle Specs</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <Chip icon={UsersIcon}       label="Seating"          value={`${v.seatingCapacity} Passengers`} />
-        <Chip icon={BoltIcon}        label="Fuel"             value={v.fuel} />
-        <Chip icon={ClockIcon}       label="Pickup"           value={v.pickupTime} />
-        <Chip icon={ClockIcon}       label="Drop-off"         value={v.dropTime} />
-        {v.hasMinimumDays && (
-          <Chip icon={CheckBadgeIcon} label="Min. Booking"    value={`${v.minimumDays} Days`} />
-        )}
-        <Chip icon={ShieldCheckIcon} label="Outside State"    value={v.allowsOutsideState ? 'Allowed' : 'Not Allowed'} />
-        {v.hasSleepingCapacity && (
-          <Chip icon={UsersIcon}     label="Sleeping"         value={`${v.sleepingCapacity} Berths`} />
-        )}
+    <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+      <h2 className="text-xl font-extrabold text-gray-900 mb-6">Technical Specifications</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <SpecCard icon={UsersIcon} label="Seating" value={`${v.seatingCapacity || 4} Passengers`} />
+        {v.fuel && <SpecCard icon={BoltIcon} label="Fuel Type" value={v.fuel} />}
+        {v.pickupTime && <SpecCard icon={ClockIcon} label="Pickup Time" value={v.pickupTime} />}
+        {v.dropTime && <SpecCard icon={ClockIcon} label="Drop-off Time" value={v.dropTime} />}
+        {v.hasMinimumDays && <SpecCard icon={CheckBadgeIcon} label="Min Booking" value={`${v.minimumDays} Days`} />}
+        <SpecCard icon={ShieldCheckIcon} label="Interstate" value={v.allowsOutsideState ? 'Allowed' : 'Not Allowed'} />
       </div>
     </div>
   );

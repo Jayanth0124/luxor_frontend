@@ -12,14 +12,17 @@ export default function PricingTable({ prices = [] }) {
             </tr>
           </thead>
           <tbody>
-            {prices.map((row, i) => (
-              <tr key={row.day} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
-                <td className="px-5 py-3 font-semibold text-gray-800">{row.day}</td>
-                <td className="px-5 py-3 text-right font-black text-gray-900">
-                  ₹{row.price.toLocaleString('en-IN')}
-                </td>
-              </tr>
-            ))}
+            {prices.map((row, i) => {
+              const dayText = row.day ?? row.dayRange;
+              return (
+                <tr key={dayText || i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
+                  <td className="px-5 py-3 font-semibold text-gray-800">{dayText}</td>
+                  <td className="px-5 py-3 text-right font-black text-gray-900">
+                    ₹{row.price.toLocaleString('en-IN')}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

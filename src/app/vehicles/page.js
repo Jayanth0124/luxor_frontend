@@ -181,99 +181,99 @@ function VehiclesContent() {
   const dummyVehicles = [
     {
       _id: '1',
-      name: 'Mercedes-Benz G-Class',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=1000&auto=format&fit=crop',
-      location: 'Manali, HP',
-      passengers: 5,
+      name: 'Luxor Expedition Defender',
+      slug: 'luxor-expedition-defender',
+      category: 'Expedition SUV',
+      seatingCapacity: 5,
+      city: 'Manali',
+      state: 'HP',
+      price: 8500,
+      rating: 4.9,
+      reviews: 42,
+      image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000&auto=format&fit=crop',
+      seats: 5,
       transmission: 'Automatic',
-      fuel: 'Petrol',
-      price: 15000,
-      isNew: true
+      fuel: 'Diesel'
     },
     {
       _id: '2',
-      name: 'Range Rover Velar',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1000&auto=format&fit=crop',
-      location: 'Leh, Ladakh',
-      passengers: 5,
+      name: 'Overland Camper Cruiser',
+      slug: 'overland-camper-cruiser',
+      category: 'Campervan',
+      seatingCapacity: 4,
+      city: 'Leh',
+      state: 'JK',
+      price: 12000,
+      rating: 4.8,
+      reviews: 29,
+      image: 'https://images.unsplash.com/photo-1527786356703-4b100091cd2c?q=80&w=1000&auto=format&fit=crop',
+      seats: 4,
       transmission: 'Automatic',
-      fuel: 'Diesel',
-      price: 18000,
-      isNew: false
+      fuel: 'Petrol'
     },
     {
       _id: '3',
-      name: 'Ford Bronco Wildtrak',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1629897048514-3dd7414ca71a?q=80&w=1000&auto=format&fit=crop',
-      location: 'Spiti Valley, HP',
-      passengers: 4,
+      name: 'Desert Storm Safari 4x4',
+      slug: 'desert-storm-safari-4x4',
+      category: 'Expedition SUV',
+      seatingCapacity: 7,
+      city: 'Jaisalmer',
+      state: 'RJ',
+      price: 9500,
+      rating: 4.7,
+      reviews: 56,
+      image: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=1000&auto=format&fit=crop',
+      seats: 7,
       transmission: 'Automatic',
-      fuel: 'Petrol',
-      price: 12000,
-      isNew: true
+      fuel: 'Petrol'
     },
     {
       _id: '4',
-      name: 'Luxor Grand Caravan',
-      type: 'caravan',
-      imgSrc: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=80&w=1000&auto=format&fit=crop',
-      location: 'Rishikesh, UK',
-      passengers: 8,
-      transmission: 'Manual',
-      fuel: 'Diesel',
-      price: 25000,
-      isNew: false
+      name: 'Luxor Luxury Glamping Caravan',
+      slug: 'luxor-luxury-glamping-caravan',
+      category: 'Luxury Caravan',
+      seatingCapacity: 4,
+      city: 'Bengaluru',
+      state: 'KA',
+      price: 15000,
+      rating: 5.0,
+      reviews: 18,
+      image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1000&auto=format&fit=crop',
+      seats: 4,
+      transmission: 'Automatic',
+      fuel: 'Diesel'
     },
     {
       _id: '5',
-      name: 'Porsche Macan GTS',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1503376713292-15f187a514d8?q=80&w=1000&auto=format&fit=crop',
-      location: 'Goa, India',
-      passengers: 5,
-      transmission: 'Automatic',
-      fuel: 'Petrol',
-      price: 22000,
-      isNew: true
+      name: 'Western Ghats Trailblazer',
+      slug: 'western-ghats-trailblazer',
+      category: 'Camping Caravan',
+      seatingCapacity: 5,
+      city: 'Coorg',
+      state: 'KA',
+      price: 11000,
+      rating: 4.8,
+      reviews: 31,
+      image: 'https://images.unsplash.com/photo-1513313778780-9ae4807465f2?q=80&w=1000&auto=format&fit=crop',
+      seats: 5,
+      transmission: 'Manual',
+      fuel: 'Petrol'
     },
     {
       _id: '6',
-      name: 'Jeep Wrangler Rubicon',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000&auto=format&fit=crop',
-      location: 'Coorg, KA',
-      passengers: 4,
+      name: 'Conqueror Overland Truck',
+      slug: 'conqueror-overland-truck',
+      category: 'Heavy Duty Camper',
+      seatingCapacity: 3,
+      city: 'Shimla',
+      state: 'HP',
+      price: 18000,
+      rating: 4.9,
+      reviews: 15,
+      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1000&auto=format&fit=crop',
+      seats: 3,
       transmission: 'Automatic',
-      fuel: 'Diesel',
-      price: 11000,
-      isNew: false
-    },
-    {
-      _id: '7',
-      name: 'Airstream Globetrotter',
-      type: 'caravan',
-      imgSrc: 'https://images.unsplash.com/photo-1627522460108-215683bd9959?q=80&w=1000&auto=format&fit=crop',
-      location: 'Jaisalmer, RJ',
-      passengers: 6,
-      transmission: 'Manual',
-      fuel: 'Diesel',
-      price: 19000,
-      isNew: true
-    },
-    {
-      _id: '8',
-      name: 'Toyota Land Cruiser',
-      type: 'suv',
-      imgSrc: 'https://images.unsplash.com/photo-1575822365922-349f4bcebe60?q=80&w=1000&auto=format&fit=crop',
-      location: 'Munnar, KL',
-      passengers: 7,
-      transmission: 'Automatic',
-      fuel: 'Diesel',
-      price: 21000,
-      isNew: false
+      fuel: 'Diesel'
     }
   ];
 
@@ -424,20 +424,33 @@ function VehiclesContent() {
                 <div className="flex-1 px-5 lg:px-7 py-3 md:py-0 relative cursor-pointer group hover:bg-black/[0.03] transition-colors rounded-l-[1.5rem] md:rounded-none h-full flex flex-col justify-center" onClick={() => setIsStartOpen(true)}>
                   <label className="block text-[9px] font-black uppercase tracking-widest text-gray-500 mb-1">Pick up Date</label>
                   <div className="text-sm font-bold text-gray-900 truncate">{startDate ? startDate.split(' ')[0] : 'Add date'}</div>
-                  {isStartOpen && (
-                    <div className="absolute top-full left-0 mt-4 z-50" onClick={(e) => e.stopPropagation()}>
-                      <CustomDatePicker isOpen={isStartOpen} onClose={() => setIsStartOpen(false)} selectedDate={startDate} onSelect={(d) => { setStartDate(d); setIsStartOpen(false); }} />
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {isStartOpen && (
+                      <CustomDatePicker
+                        isOpen={isStartOpen}
+                        onClose={() => setIsStartOpen(false)}
+                        selectedDate={startDate}
+                        onSelect={(d) => { setStartDate(d); setIsStartOpen(false); }}
+                        showTime={true}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
                 <div className="flex-1 px-5 lg:px-7 py-3 md:py-0 relative cursor-pointer group hover:bg-black/[0.03] transition-colors rounded-r-[1.5rem] md:rounded-none h-full flex flex-col justify-center" onClick={() => setIsEndOpen(true)}>
                   <label className="block text-[9px] font-black uppercase tracking-widest text-gray-500 mb-1">Drop off Date</label>
                   <div className="text-sm font-bold text-gray-900 truncate">{endDate ? endDate.split(' ')[0] : 'Add date'}</div>
-                  {isEndOpen && (
-                    <div className="absolute top-full left-0 mt-4 z-50" onClick={(e) => e.stopPropagation()}>
-                      <CustomDatePicker isOpen={isEndOpen} onClose={() => setIsEndOpen(false)} selectedDate={endDate} onSelect={(d) => { setEndDate(d); setIsEndOpen(false); }} />
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {isEndOpen && (
+                      <CustomDatePicker
+                        isOpen={isEndOpen}
+                        onClose={() => setIsEndOpen(false)}
+                        selectedDate={endDate}
+                        onSelect={(d) => { setEndDate(d); setIsEndOpen(false); }}
+                        minDate={startDate ? startDate.split(' ')[0] : undefined}
+                        showTime={true}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
