@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '@/store/authSlice';
+import { AnimatePresence } from 'framer-motion';
 import CustomDatePicker from '@/components/CustomDatePicker';
 
 export default function VehicleBookingCard({ vehicle }) {
@@ -62,13 +63,17 @@ export default function VehicleBookingCard({ vehicle }) {
               </div>
               <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d={pickupOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
             </button>
-            <CustomDatePicker
-              isOpen={pickupOpen}
-              onClose={() => setPickupOpen(false)}
-              selectedDate={pickup}
-              onSelect={setPickup}
-              showTime={true}
-            />
+            <AnimatePresence>
+              {pickupOpen && (
+                <CustomDatePicker
+                  isOpen={pickupOpen}
+                  onClose={() => setPickupOpen(false)}
+                  selectedDate={pickup}
+                  onSelect={setPickup}
+                  showTime={true}
+                />
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="relative z-10">
@@ -85,14 +90,18 @@ export default function VehicleBookingCard({ vehicle }) {
               </div>
               <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d={dropoffOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
             </button>
-            <CustomDatePicker
-              isOpen={dropoffOpen}
-              onClose={() => setDropoffOpen(false)}
-              selectedDate={dropoff}
-              onSelect={setDropoff}
-              minDate={pickup ? pickup.split(' ')[0] : undefined}
-              showTime={true}
-            />
+            <AnimatePresence>
+              {dropoffOpen && (
+                <CustomDatePicker
+                  isOpen={dropoffOpen}
+                  onClose={() => setDropoffOpen(false)}
+                  selectedDate={dropoff}
+                  onSelect={setDropoff}
+                  minDate={pickup ? pickup.split(' ')[0] : undefined}
+                  showTime={true}
+                />
+              )}
+            </AnimatePresence>
           </div>
         </div>
 

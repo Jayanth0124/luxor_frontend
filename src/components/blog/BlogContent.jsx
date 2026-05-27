@@ -61,6 +61,7 @@ const DUMMY_POSTS = [
 
 export default function BlogContent() {
   const [type, setType] = useState('');
+  const [isDark, setIsDark] = useState(false);
 
   // Parallax for Hero
   const { scrollY } = useScroll();
@@ -70,7 +71,9 @@ export default function BlogContent() {
   const posts = DUMMY_POSTS.filter(p => type === '' || p.type === type);
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] overflow-hidden text-gray-900 selection:bg-[#84cc16] selection:text-white font-sans">
+    <main className={`min-h-screen transition-colors duration-500 overflow-hidden font-sans ${
+      isDark ? 'bg-gray-950 text-white selection:bg-[#84cc16] selection:text-white' : 'bg-[#fcfcfc] text-gray-900 selection:bg-[#84cc16] selection:text-white'
+    }`}>
 
       {/* ── CINEMATIC HERO ── */}
       <section className="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
@@ -78,11 +81,11 @@ export default function BlogContent() {
           <img
             src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2500&auto=format&fit=crop"
             alt="Travel Hero"
-            className="w-full h-full object-cover opacity-80"
+            className={`w-full h-full object-cover transition-opacity duration-500 ${isDark ? 'opacity-40' : 'opacity-80'}`}
           />
-          {/* Light theme gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#fcfcfc] via-[#fcfcfc]/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#fcfcfc]/40 via-transparent to-transparent" />
+          {/* Theme adaptive gradients */}
+          <div className={`absolute inset-0 bg-gradient-to-t transition-colors duration-500 ${isDark ? 'from-gray-950 via-gray-950/60 to-transparent' : 'from-[#fcfcfc] via-[#fcfcfc]/60 to-transparent'}`} />
+          <div className={`absolute inset-0 bg-gradient-to-b transition-colors duration-500 ${isDark ? 'from-gray-950/40' : 'from-[#fcfcfc]/40'} via-transparent to-transparent`} />
         </motion.div>
 
         <motion.div style={{ y: yText }} className="relative z-10 max-w-5xl mx-auto px-4 text-center mt-20">
@@ -97,15 +100,17 @@ export default function BlogContent() {
 
           <motion.h1
             initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
-            className="text-6xl md:text-8xl lg:text-[8rem] font-black tracking-tighter leading-[0.9] mb-8 text-gray-900"
+            className={`text-6xl md:text-8xl lg:text-[8rem] font-black tracking-tighter leading-[0.9] mb-8 transition-colors duration-500 ${isDark ? 'text-white' : 'text-gray-900'}`}
           >
             The Art Of <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-600 to-gray-400 italic font-light">Exploration.</span>
+            <span className={`text-transparent bg-clip-text transition-all duration-500 italic font-light ${
+              isDark ? 'bg-gradient-to-r from-white via-gray-300 to-gray-500' : 'bg-gradient-to-r from-gray-900 via-gray-600 to-gray-400'
+            }`}>Exploration.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }}
-            className="text-gray-600 font-bold tracking-widest uppercase text-xs md:text-sm max-w-xl mx-auto leading-relaxed"
+            className={`transition-colors duration-500 font-bold tracking-widest uppercase text-xs md:text-sm max-w-xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
           >
             A curated stream of cinematic journeys, field reports, and untamed routes across the subcontinent.
           </motion.p>
@@ -116,19 +121,27 @@ export default function BlogContent() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-10"
         >
-          <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]" style={{ writingMode: 'vertical-rl' }}>Scroll</span>
-          <div className="w-[1px] h-16 bg-gray-200 relative overflow-hidden">
+          <span className={`text-[9px] font-black uppercase tracking-[0.3em] transition-colors duration-500 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} style={{ writingMode: 'vertical-rl' }}>Scroll</span>
+          <div className={`w-[1px] h-16 relative overflow-hidden transition-colors duration-500 ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}>
             <div className="absolute top-0 left-0 w-full h-1/2 bg-[#84cc16] animate-[scrollDown_2s_infinite]" />
           </div>
         </motion.div>
       </section>
 
       {/* ── IMMERSIVE FILTER STRIP ── */}
-      <section className="sticky top-0 z-50 bg-white/80 backdrop-blur-2xl border-y border-gray-100 py-4 transition-all shadow-sm">
+      <section className={`sticky top-[72px] z-40 transition-all duration-500 border-y py-4 shadow-sm ${
+        isDark ? 'bg-gray-950/85 border-gray-900 backdrop-blur-2xl' : 'bg-white/80 border-gray-100 backdrop-blur-2xl'
+      }`}>
         <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
-          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden sm:block">
+          
+          {/* Left Area: Label */}
+          <div className={`text-[10px] font-bold uppercase tracking-widest hidden sm:block transition-colors duration-500 ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}>
             Filter Stream
           </div>
+          
+          {/* Center Area: Filters */}
           <div className="flex items-center gap-6 md:gap-12 mx-auto sm:mx-0">
             {[
               { label: 'All Stories', value: '' },
@@ -138,8 +151,13 @@ export default function BlogContent() {
               <button
                 key={f.value}
                 onClick={() => setType(f.value)}
-                className={`relative text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-500 py-2 ${type === f.value ? 'text-[#84cc16]' : 'text-gray-400 hover:text-gray-900'
-                  }`}
+                className={`relative text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-500 py-2 ${
+                  type === f.value
+                    ? 'text-[#84cc16]'
+                    : isDark
+                    ? 'text-gray-500 hover:text-gray-200'
+                    : 'text-gray-400 hover:text-gray-900'
+                }`}
               >
                 {f.label}
                 {type === f.value && (
@@ -148,11 +166,39 @@ export default function BlogContent() {
               </button>
             ))}
           </div>
+
+          {/* Right Area: Light/Dark Toggle */}
+          <div className="flex items-center">
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all duration-500 relative overflow-hidden group shadow-sm ${
+                isDark
+                  ? 'bg-gray-900 border-gray-800 text-yellow-400 hover:bg-gray-800 hover:border-gray-700'
+                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100 hover:border-gray-300'
+              }`}
+              aria-label="Toggle Theme"
+            >
+              <div className="relative w-4.5 h-4.5">
+                {isDark ? (
+                  // Sun Icon for Mode switching
+                  <svg className="w-4.5 h-4.5 transition-transform duration-500 rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m2.828 9.9a5 5 0 117.072 0l-7.072 0z" />
+                  </svg>
+                ) : (
+                  // Moon Icon
+                  <svg className="w-4.5 h-4.5 transition-transform duration-500 rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </div>
+            </button>
+          </div>
+
         </div>
       </section>
 
       {/* ── CINEMATIC CONTENT STREAM ── */}
-      <section className="pb-40 w-full bg-[#fcfcfc]">
+      <section className={`pb-40 w-full transition-colors duration-500 ${isDark ? 'bg-gray-950' : 'bg-[#fcfcfc]'}`}>
         {posts.length === 0 ? (
           <div className="h-[50vh] flex items-center justify-center text-gray-400 tracking-widest uppercase text-sm font-bold">
             No entries found in this stream.
@@ -167,12 +213,14 @@ export default function BlogContent() {
                 <div key={post._id} className="relative w-full">
 
                   {/* The Post Item (Alternating Stacked Layout) */}
-                  <PostStreamItem post={post} index={index} isEven={isEven} />
+                  <PostStreamItem post={post} index={index} isEven={isEven} isDark={isDark} />
 
                   {/* ── FULLSCREEN BREATHER BANNERS ── */}
                   {index === 0 && (
                     <div className="relative w-full h-[70vh] my-10 md:my-20 overflow-hidden group">
-                      <div className="absolute inset-0 bg-white z-10 opacity-10 group-hover:opacity-0 transition-opacity duration-1000" />
+                      <div className={`absolute inset-0 z-10 transition-opacity duration-1000 group-hover:opacity-0 ${
+                        isDark ? 'bg-black opacity-30' : 'bg-white opacity-10'
+                      }`} />
                       <motion.div
                         initial={{ scale: 1.1 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ duration: 2, ease: 'easeOut' }}
                         className="w-full h-full"
@@ -197,10 +245,10 @@ export default function BlogContent() {
                         <img
                           src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2000&auto=format&fit=crop"
                           alt="Offroad Lifestyle"
-                          className="w-4/5 h-4/5 object-cover rounded-sm opacity-90 group-hover:opacity-100 transition-opacity duration-1000 grayscale group-hover:grayscale-0 shadow-xl"
+                          className="w-4/5 h-4/5 object-cover rounded-sm opacity-90 group-hover:opacity-100 transition-all duration-[1200ms] ease-out scale-100 group-hover:scale-[1.04] grayscale group-hover:grayscale-0 shadow-xl"
                         />
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-full text-center pointer-events-none">
-                          <p className="text-sm md:text-lg font-mono text-gray-900 tracking-[0.5em] uppercase bg-white/90 backdrop-blur-md inline-block px-10 py-4 border border-gray-200 shadow-2xl">
+                          <p className="text-sm md:text-lg font-mono text-gray-900 tracking-[0.5em] uppercase bg-white/90 backdrop-blur-md inline-block px-10 py-4 border border-gray-200 shadow-2xl transition-all duration-500">
                             Uncharted Territory
                           </p>
                         </div>

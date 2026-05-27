@@ -8,155 +8,11 @@ function formatDate(d) {
   return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function CategoryBadge({ category, type }) {
-  if (!category && type !== 'vlog') return null;
-  const label = type === 'vlog' ? 'Vlog' : category;
-  const classes = type === 'vlog'
-    ? 'bg-purple-500 text-white'
-    : 'bg-[#84cc16] text-white';
-  return (
-    <span className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${classes}`}>
-      {label}
-    </span>
-  );
-}
-
-/* ── Featured (large) card ──────────────────────────────────────── */
-function FeaturedCard({ post }) {
-  const [loaded, setLoaded] = useState(false);
-  return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="group relative rounded-3xl overflow-hidden bg-gray-900 flex flex-col justify-end min-h-[420px] sm:min-h-[500px]"
-    >
-      {/* Image */}
-      {post.coverImage && (
-        <img
-          src={post.coverImage}
-          alt={post.title}
-          onLoad={() => setLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        />
-      )}
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-      {/* Play button for vlogs */}
-      {post.type === 'vlog' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </div>
-      )}
-
-      {/* Content */}
-      <div className="relative z-10 p-6 sm:p-8 space-y-3">
-        <CategoryBadge category={post.category} type={post.type} />
-        <h2 className="text-white text-xl sm:text-2xl font-bold leading-snug line-clamp-2 group-hover:text-[#84cc16] transition-colors duration-200">
-          {post.title}
-        </h2>
-        {post.excerpt && (
-          <p className="text-white/70 text-sm line-clamp-2 leading-relaxed hidden sm:block">
-            {post.excerpt}
-          </p>
-        )}
-        <div className="flex items-center gap-3 text-white/50 text-xs pt-1">
-          {post.authorName && <span>{post.authorName}</span>}
-          {post.authorName && <span>·</span>}
-          {post.readTime > 0 && <span>{post.readTime} min read</span>}
-          {post.readTime > 0 && <span>·</span>}
-          <span>{formatDate(post.publishedAt || post.createdAt)}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/* ── Compact side card ──────────────────────────────────────────── */
-function CompactCard({ post }) {
-  return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="group flex gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
-    >
-      {post.coverImage && (
-        <div className="shrink-0 w-24 h-20 rounded-xl overflow-hidden bg-gray-100">
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      )}
-      <div className="flex-1 min-w-0 space-y-1.5">
-        <CategoryBadge category={post.category} type={post.type} />
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#84cc16] transition-colors duration-200">
-          {post.title}
-        </h3>
-        <p className="text-xs text-gray-400">
-          {formatDate(post.publishedAt || post.createdAt)}
-          {post.readTime > 0 && <> · {post.readTime} min</>}
-        </p>
-      </div>
-    </Link>
-  );
-}
-
-/* ── Bottom row card ────────────────────────────────────────────── */
-function GridCard({ post }) {
-  const [loaded, setLoaded] = useState(false);
-  return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="group flex flex-col rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 bg-white"
-    >
-      {post.coverImage ? (
-        <div className="relative h-44 bg-gray-100 overflow-hidden">
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            onLoad={() => setLoaded(true)}
-            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-          />
-          {post.type === 'vlog' && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-              <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="h-44 bg-gradient-to-br from-lime-50 to-green-100 flex items-center justify-center">
-          <svg className="w-10 h-10 text-lime-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-          </svg>
-        </div>
-      )}
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <CategoryBadge category={post.category} type={post.type} />
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#84cc16] transition-colors duration-200 flex-1">
-          {post.title}
-        </h3>
-        <p className="text-xs text-gray-400 mt-auto">
-          {formatDate(post.publishedAt || post.createdAt)}
-          {post.readTime > 0 && <span className="ml-1.5">· {post.readTime} min read</span>}
-        </p>
-      </div>
-    </Link>
-  );
-}
-
 const DUMMY_POSTS = [
   {
     _id: '1',
     slug: 'himalayan-ascent',
-    title: 'The Himalayan Ascent',
+    title: 'The Himalayan Ascent: Trailing Spiti Valley Trails',
     subtitle: 'A Journey Beyond the Clouds',
     excerpt: 'We pushed our luxury SUVs to their limits traversing the treacherous Spiti Valley roads, discovering untamed beauty at 14,000 feet. The air grows thin, but the engine roars louder.',
     category: 'Expedition',
@@ -169,7 +25,7 @@ const DUMMY_POSTS = [
   {
     _id: '2',
     slug: 'coastal-drive-goa',
-    title: 'Chasing Sunsets',
+    title: 'Chasing Sunsets: The Ultimate Coastal Escape',
     subtitle: 'The Ultimate Coastal Drive',
     excerpt: 'A 500km journey along the Konkan coast in our premium caravans, exploring hidden beaches and dense mangrove forests. Salt in the air and freedom on the dashboard.',
     category: 'Travel Notes',
@@ -182,7 +38,7 @@ const DUMMY_POSTS = [
   {
     _id: '3',
     slug: 'desert-safari-thar',
-    title: 'Golden Dunes of Thar',
+    title: 'Golden Dunes of Thar: Surviving Sand Traps',
     subtitle: 'Navigating the Unforgiving Sands',
     excerpt: 'Surviving the extreme heat and unpredictable sands of the Thar Desert. A true test of our 4x4 expedition vehicles against nature\'s harshest playground.',
     category: 'Field Report',
@@ -195,7 +51,7 @@ const DUMMY_POSTS = [
   {
     _id: '4',
     slug: 'forest-canopy-coorg',
-    title: 'Into the Emerald Canopy',
+    title: 'Into the Emerald Canopy of Coorg Coffee Country',
     subtitle: 'Camping in India\'s Coffee Country',
     excerpt: 'Camping under the dense, rain-soaked canopy of the Western Ghats. A journey into the heart of India\'s coffee country where the mist never truly lifts.',
     category: 'Expedition',
@@ -207,103 +63,204 @@ const DUMMY_POSTS = [
   }
 ];
 
-/* ── Skeleton loaders ───────────────────────────────────────────── */
 function Skeleton({ className }) {
-  return <div className={`animate-pulse bg-gray-100 rounded-2xl ${className}`} />;
+  return <div className={`animate-pulse bg-gray-100 rounded-3xl ${className}`} />;
 }
 
-/* ── Main section ───────────────────────────────────────────────── */
 export default function BlogSection() {
-  const [posts] = useState(DUMMY_POSTS);
-  const [loading] = useState(false);
+  const [posts, setPosts] = useState(DUMMY_POSTS);
+  const [loading, setLoading] = useState(false);
+
+  // Split layout states
+  const [hoveredSide, setHoveredSide] = useState(null); // 'left' | 'right' | null
+  const [activeVlogIndex, setActiveVlogIndex] = useState(0);
+
+  useEffect(() => {
+    setLoading(true);
+    getPosts()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setPosts(data);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   if (!loading && posts.length === 0) return null;
 
-  const [featured, ...rest] = posts;
-  const sideCards = rest.slice(0, 2);
-  const gridCards = rest.slice(2, 5);
+  // Filter posts strictly into Blogs and Vlogs
+  const blogPosts = posts.filter((p) => p.type === 'blog' || !p.type);
+  const vlogPosts = posts.filter((p) => p.type === 'vlog');
+  const activeVlog = vlogPosts[activeVlogIndex] || vlogPosts[0];
 
   return (
-    <section className="py-14 px-4 sm:px-6 md:px-12 xl:px-20 bg-white border-t border-gray-100">
-      <div className="max-w-screen-xl mx-auto space-y-8">
-
-        {/* Header */}
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#84cc16] mb-1">Stories & Insights</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">From Our Blog</h2>
+    <section className="py-20 px-4 sm:px-6 md:px-12 xl:px-20 bg-[#fbfaf8] border-t border-gray-100 overflow-hidden font-sans">
+      <div className="max-w-screen-xl mx-auto space-y-12">
+        
+        {/* Modern Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#84cc16]">Stories & Media</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Our Blog & Vlog</h2>
           </div>
           <Link
             href="/blog"
-            className="group flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-[#84cc16] transition-colors duration-200"
+            className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#84cc16] transition-colors duration-200"
           >
-            View all
-            <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            Explore all
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
         </div>
 
         {loading ? (
-          /* Loading state */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-2"><Skeleton className="h-[420px] sm:h-[500px]" /></div>
-            <div className="flex flex-col gap-3">
-              <Skeleton className="h-28" /><Skeleton className="h-28" /><Skeleton className="h-28" />
-            </div>
-            <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
-              <Skeleton className="h-64" /><Skeleton className="h-64" /><Skeleton className="h-64" />
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[600px]">
+            <Skeleton className="h-full" />
+            <Skeleton className="h-full" />
           </div>
         ) : (
-          <div className="space-y-5">
-            {/* Top row: featured + side cards */}
-            {featured && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div className="lg:col-span-2">
-                  <FeaturedCard post={featured} />
+          /* Immersive Split-Screen Container */
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch min-h-[620px] relative">
+            
+            {/* ── LEFT SIDE: CINEMATIC VLOG EXPERIENCE ───────────────────── */}
+            <div
+              onMouseEnter={() => setHoveredSide('left')}
+              onMouseLeave={() => setHoveredSide(null)}
+              className={`flex-1 flex flex-col justify-between bg-gradient-to-b from-[#fbf9f4] to-[#f5efe2] border border-[#ecdcb8]/70 rounded-[36px] p-6 sm:p-8 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden relative group ${
+                hoveredSide === 'left'
+                  ? 'lg:flex-[1.3] lg:max-w-[60%]'
+                  : hoveredSide === 'right'
+                  ? 'lg:flex-[0.7] lg:max-w-[40%] opacity-85'
+                  : 'lg:flex-[1.0] lg:max-w-[50%]'
+              }`}
+            >
+              <div className="space-y-4 z-10">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#84cc16]">Vlog</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">LUXOR TV Originals</span>
                 </div>
-                <div className="flex flex-col justify-between gap-3">
-                  {sideCards.map((p) => (
-                    <CompactCard key={p._id} post={p} />
-                  ))}
-                  {sideCards.length < 2 && (
-                    <Link
-                      href="/blog"
-                      className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 p-4 text-sm text-gray-400 hover:border-[#84cc16] hover:text-[#84cc16] transition-colors duration-200"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                      </svg>
-                      More stories
-                    </Link>
-                  )}
-                  {/* CTA box */}
-                  <div className="rounded-2xl bg-gradient-to-br from-lime-50 to-green-50 border border-lime-100 p-5 space-y-2">
-                    <p className="text-sm font-semibold text-gray-800">Explore more stories</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">Travel tips, destination guides, vlog highlights and more.</p>
-                    <Link
-                      href="/blog"
-                      className="inline-flex items-center gap-1.5 mt-1 text-xs font-semibold text-[#84cc16] hover:underline"
-                    >
-                      Visit our blog
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )}
 
-            {/* Bottom row: grid cards */}
-            {gridCards.length > 0 && (
-              <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {gridCards.map((p) => (
-                  <GridCard key={p._id} post={p} />
-                ))}
+                {/* Main Video View Screen */}
+                {activeVlog && (
+                  <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-[#e6ddca] shadow-md border border-[#ecdcb8]/30">
+                    <img
+                      src={activeVlog.coverImage}
+                      alt={activeVlog.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.04]"
+                    />
+                    {/* Soft Cinematic Overlays */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/15" />
+
+                    {/* Floating Play Button */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-white/50 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#84cc16] transition-all duration-300 ease-out">
+                        <svg className="w-6 h-6 text-gray-900 group-hover:text-white ml-0.5 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Duration Badge */}
+                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md text-white text-[9px] font-bold tracking-widest px-2.5 py-1 rounded-lg border border-white/10">
+                      {activeVlog.readTime ? `0${activeVlog.readTime}:00` : '05:40'}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Active Vlog Metadata Panel */}
+              {activeVlog && (
+                <div className="space-y-4 pt-6 z-10">
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#84cc16]">
+                      {activeVlog.category || 'CINEMATIC'}
+                    </div>
+                    <h3 className="text-gray-900 font-sans font-bold text-xl sm:text-2xl leading-tight group-hover:translate-x-0.5 transition-transform duration-300">
+                      {activeVlog.title}
+                    </h3>
+                    <p className="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
+                      Streamed · {formatDate(activeVlog.publishedAt || activeVlog.createdAt)}
+                    </p>
+                  </div>
+
+                  {/* Multi-Vlog Selector (Thumbnails) */}
+                  {vlogPosts.length > 1 && (
+                    <div className="flex gap-2.5 pt-4 border-t border-[#ecdcb8]/30">
+                      {vlogPosts.map((v, i) => (
+                        <button
+                          key={v._id}
+                          onClick={() => setActiveVlogIndex(i)}
+                          className={`relative w-14 h-10 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                            activeVlogIndex === i
+                              ? 'border-[#84cc16] scale-105 shadow-sm'
+                              : 'border-transparent opacity-50 hover:opacity-80'
+                          }`}
+                        >
+                          <img src={v.coverImage} className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ── RIGHT SIDE: EDITORIAL BLOG STORIES ─────────────────────── */}
+            <div
+              onMouseEnter={() => setHoveredSide('right')}
+              onMouseLeave={() => setHoveredSide(null)}
+              className={`flex-1 flex flex-col bg-white border border-gray-100 rounded-[36px] p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.015)] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                hoveredSide === 'right'
+                  ? 'lg:flex-[1.3] lg:max-w-[60%]'
+                  : hoveredSide === 'left'
+                  ? 'lg:flex-[0.7] lg:max-w-[40%] opacity-85'
+                  : 'lg:flex-[1.0] lg:max-w-[50%]'
+              }`}
+            >
+              <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#84cc16]">Blog</span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Magazine Journal</span>
+              </div>
+
+              {/* Scrollable Editorial List with Fade-out mask */}
+              <div className="flex-1 overflow-y-auto max-h-[460px] pr-2 space-y-8 scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-transparent">
+                {blogPosts.map((post) => (
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    key={post._id}
+                    className="group/item block space-y-3 pb-6 border-b border-gray-50 last:border-0 last:pb-0"
+                  >
+                    <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-[0.2em]">
+                      <span className="text-[#84cc16]">{post.category || 'EXPEDITION'}</span>
+                      <span className="text-gray-400">{post.readTime || 8} MIN READ</span>
+                    </div>
+
+                    <h4 className="text-gray-900 leading-tight font-serif text-xl sm:text-2xl font-bold group-hover/item:text-[#84cc16] transition-colors duration-300">
+                      {post.title}
+                    </h4>
+
+                    {post.excerpt && (
+                      <p className="text-gray-500 text-xs sm:text-sm leading-relaxed font-light line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-2 pt-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
+                      <span>{post.authorName || 'LUXOR TEAM'}</span>
+                      <span>·</span>
+                      <span>{formatDate(post.publishedAt || post.createdAt)}</span>
+                    </div>
+                  </Link>
+                ))}
+
+                {blogPosts.length === 0 && (
+                  <p className="text-sm text-gray-400 text-center py-12">No blogs found.</p>
+                )}
+              </div>
+            </div>
+
           </div>
         )}
       </div>

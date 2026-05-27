@@ -95,3 +95,13 @@ export const resumeBookingPayment = async (bookingId, guestEmail = '') => {
   const { data: res } = await api.post(`/public/bookings/${bookingId}/resume-payment`, { guestEmail });
   return res.data;
 };
+
+export const getVehicleCategories = async () => {
+  try {
+    const { data } = await api.get('/public/vehicle-categories');
+    return data.data;
+  } catch (err) {
+    console.warn('Failed to fetch vehicle categories from backend API:', err.message);
+    return null;
+  }
+};

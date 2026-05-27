@@ -11,7 +11,6 @@ const PARTNER_URL = process.env.NEXT_PUBLIC_PARTNER_URL || 'http://localhost:912
 
 // ── Added Home Navigation ──
 const NAV_LINKS = [
-  { label: 'Home', href: '/' },
   { label: 'Vehicles', href: '/vehicles' },
   { label: 'Campsites', href: '/campsites' },
   { label: 'Blog', href: '/blog' },

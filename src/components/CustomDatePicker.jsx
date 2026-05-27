@@ -10,7 +10,7 @@ for (let i = 8; i <= 22; i++) { // 8 AM to 10 PM
   TIME_SLOTS.push(`${hour}:30 ${ampm}`);
 }
 
-export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSelect, minDate, showTime = true }) {
+export default function CustomDatePicker({ isOpen, onClose, onAdvance, selectedDate, onSelect, minDate, showTime = true }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedTime, setSelectedTime] = useState('10:00 AM');
   const [placement, setPlacement] = useState('up');
@@ -40,14 +40,31 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
         const parent = containerRef.current.parentNode;
         if (parent) {
           const parentRect = parent.getBoundingClientRect();
-          const spaceBelow = window.innerHeight - parentRect.bottom;
-          const spaceAbove = parentRect.top;
+          const viewportHeight = window.innerHeight;
+          const spaceBelowViewport = viewportHeight - parentRect.bottom;
+          const spaceAboveViewport = parentRect.top;
+          
+          // Total document space below the parent bottom
+          const docScrollY = window.scrollY || document.documentElement.scrollTop;
+          const totalDocHeight = document.documentElement.scrollHeight;
+          const spaceBelowDocument = totalDocHeight - (docScrollY + parentRect.bottom);
+          
           const requiredSpace = showTime ? 320 : 250;
           
-          if (spaceBelow < requiredSpace && spaceAbove > spaceBelow) {
+          // If we are at the top of the page (scrollY is small), prefer downward opening if document space below exists
+          if (docScrollY < 100 && spaceBelowDocument >= requiredSpace) {
+            setPlacement('down');
+          } else if (spaceBelowViewport >= requiredSpace) {
+            setPlacement('down');
+          } else if (spaceAboveViewport >= requiredSpace) {
             setPlacement('up');
           } else {
-            setPlacement('down');
+            // Fallback: choose the side with more space
+            if (spaceBelowViewport + spaceBelowDocument > spaceAboveViewport) {
+              setPlacement('down');
+            } else {
+              setPlacement('up');
+            }
           }
         }
       }
@@ -63,24 +80,7 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
     };
   }, [isOpen, showTime]);
 
-  // Click outside detector
-  useEffect(() => {
-    if (!isOpen) return;
 
-    const handleDocumentClick = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        const parent = containerRef.current.parentNode;
-        if (parent && !parent.contains(e.target)) {
-          onClose();
-        }
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [isOpen, onClose]);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfMonth = currentMonth.startOf('month').day();
@@ -94,7 +94,11 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
       onSelect(`${dateStr} ${selectedTime}`);
     } else {
       onSelect(dateStr);
-      if (onClose) onClose();
+      if (onAdvance) {
+        onAdvance();
+      } else if (onClose) {
+        onClose();
+      }
     }
   };
 
@@ -108,7 +112,11 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
       const todayStr = dayjs().format('YYYY-MM-DD');
       onSelect(`${todayStr} ${timeStr}`);
     }
-    if (onClose) onClose();
+    if (onAdvance) {
+      onAdvance();
+    } else if (onClose) {
+      onClose();
+    }
   };
 
   const selectedDatePart = selectedDate ? selectedDate.split(' ')[0] : null;
@@ -120,7 +128,7 @@ export default function CustomDatePicker({ isOpen, onClose, selectedDate, onSele
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: placement === 'up' ? 10 : -10, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className={`absolute left-0 bg-white/80 backdrop-blur-3xl border border-white/40 rounded-2xl p-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] w-[240px] z-50 overflow-hidden flex flex-col font-sans ring-1 ring-black/5 ${
+      className={`absolute left-0 bg-white border border-gray-100 rounded-2xl p-3 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] w-[240px] z-50 overflow-hidden flex flex-col font-sans ring-1 ring-black/5 ${
         placement === 'up' 
           ? 'bottom-full mb-3 origin-bottom shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.15)]' 
           : 'top-full mt-3 origin-top shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)]'
