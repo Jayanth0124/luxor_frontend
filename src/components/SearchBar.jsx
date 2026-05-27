@@ -123,28 +123,26 @@ export default function SearchBar({ tab: externalTab, onTabChange }) {
     <div className="w-full max-w-4xl mx-auto flex flex-col items-center z-20 relative" ref={containerRef}>
 
       {/* ── Premium Animated Segmented Control ── */}
-      {externalTab === undefined && (
-        <div className="flex bg-black/40 backdrop-blur-md rounded-full p-1.5 mb-8 border border-white/10 shadow-2xl">
-          {['vehicle', 'campsite'].map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className="relative px-8 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-colors z-10"
-            >
-              {tab === t && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-white rounded-full shadow-lg z-[-1]"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className={tab === t ? "text-gray-900" : "text-white/80 hover:text-white"}>
-                {t === 'vehicle' ? 'Vehicles' : 'Campsites'}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="flex bg-black/40 backdrop-blur-md rounded-full p-1.5 mb-8 border border-white/10 shadow-2xl">
+        {['vehicle', 'campsite'].map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className="relative px-8 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-colors z-10"
+          >
+            {tab === t && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute inset-0 bg-white rounded-full shadow-lg z-[-1]"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className={tab === t ? "text-gray-900" : "text-white/80 hover:text-white"}>
+              {t === 'vehicle' ? 'Vehicles' : 'Campsites'}
+            </span>
+          </button>
+        ))}
+      </div>
 
       {/* ── The Floating Luxury Booking Surface (Airbnb Style) ── */}
       <div className="bg-white rounded-[2rem] shadow-[0_16px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 flex flex-col lg:flex-row items-center w-full relative">
