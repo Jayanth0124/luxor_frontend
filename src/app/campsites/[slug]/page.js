@@ -314,11 +314,17 @@ export default function CampsiteDetailPage() {
   const { slug } = useParams();
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
-  const campsite = DUMMY_CAMPSITES.find(c => c.slug === slug);
-  const isLoading = false;
-  const isError = !campsite;
+  const { data: campsite, isLoading, isError } = useQuery({
+    queryKey: ['public-campsite', slug],
+    queryFn: () => getCampsiteBySlug(slug),
+    enabled: !!slug,
+  });
 
-  const allBlocks = [];
+  const { data: allBlocks = [] } = useQuery({
+    queryKey: ['campsite-blocked-periods', campsite?._id],
+    queryFn: () => getCampsiteBlockedPeriods(campsite._id),
+    enabled: !!campsite?._id,
+  });
 
   const hasCampsiteWideBlock = allBlocks.some((b) => !b.roomId);
   const roomHasBlocks = (roomId) =>

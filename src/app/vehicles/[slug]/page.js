@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { MapPinIcon } from '@/assets/icons';
 import ImageGallery from '@/components/vehicle-detail/ImageGallery';
 import VehicleSpecs from '@/components/vehicle-detail/VehicleSpecs';
@@ -12,6 +13,7 @@ import VehicleBookingCard from '@/components/vehicle-detail/VehicleBookingCard';
 import ReviewsSection from '@/components/ReviewsSection';
 import CancellationPolicySection from '@/components/CancellationPolicySection';
 import YouTubeVideos from '@/components/YouTubeVideos';
+import { getVehicleBySlug } from '@/services/vehicles.service';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8081';
 
@@ -60,9 +62,11 @@ const DUMMY_VEHICLES = [
 export default function VehicleDetailPage() {
   const { slug } = useParams();
 
-  const vehicle = DUMMY_VEHICLES.find(v => v.slug === slug) || DUMMY_VEHICLES[0];
-  const isLoading = false;
-  const isError = !vehicle;
+  const { data: vehicle, isLoading, isError } = useQuery({
+    queryKey: ['public-vehicle', slug],
+    queryFn: () => getVehicleBySlug(slug),
+    enabled: !!slug,
+  });
 
   if (isLoading) return (
     <div className="bg-[#f8fafc] min-h-screen pt-16 flex items-center justify-center">

@@ -2,10 +2,12 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import CampsiteCard from '@/components/home/CampsiteCard';
 import LocationAutocomplete from '@/components/LocationAutocomplete';
+import { getCampsites } from '@/services/campsites.service';
 
 /* ─────────────────────────────────────────────
    MOCK CAMPSITE DATA — swap back to useQuery later
@@ -144,22 +146,37 @@ function CampsitesContent() {
   const textY = useTransform(scrollY, [0, 600], ['0%', '12%']);
   const searchY = useTransform(scrollY, [0, 600], ['0%', '6%']);
 
-  /* ── TEMPORARY: use dummy data, remove this block and restore useQuery later ── */
-  const campsites = DUMMY_CAMPSITES;
-  const totalPages = 1;
-  const isLoading = false;
+  const [page, setPage] = useState(1);
 
-  const pushUrl = (s, st, ci) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['public-campsites', search, state, city, page],
+    queryFn: () => getCampsites({
+      search: search || undefined,
+      state: state || undefined,
+      city: city || undefined,
+      page,
+      limit: 12
+    }),
+    keepPreviousData: true,
+  });
+
+  const campsites = data?.campsites ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.ceil(total / 12);
+
+  const pushUrl = (s, st, ci, p = 1) => {
     const params = new URLSearchParams();
     if (s) params.set('search', s);
     if (st) params.set('state', st);
     if (ci) params.set('city', ci);
+    if (p > 1) params.set('page', p);
     router.replace(`/campsites?${params.toString()}`, { scroll: false });
   };
 
   const handleSearch = (e) => {
     e?.preventDefault();
-    pushUrl(search, state, city);
+    setPage(1);
+    pushUrl(search, state, city, 1);
   };
 
   const handleLocationSelect = ({ city: c, state: s, display }) => {
@@ -175,7 +192,8 @@ function CampsitesContent() {
   const handleClear = () => {
     setCity(''); setState(''); setLocationDisplay(''); setSearch('');
     setNearMe(false);
-    pushUrl('', '', '');
+    setPage(1);
+    pushUrl('', '', '', 1);
   };
 
   const handleNearMe = () => {
@@ -417,14 +435,22 @@ function CampsitesContent() {
           {/* Futuristic Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-6 mt-32 relative z-20">
-              <button className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+              <button
+                onClick={() => { setPage((p) => Math.max(1, p - 1)); pushUrl(search, state, city, page - 1); }}
+                disabled={page === 1}
+                className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+              >
                 <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
               </button>
               <div className="flex flex-col items-center">
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Page</span>
                 <span className="text-lg font-black text-gray-900 tracking-widest">{page} / {totalPages}</span>
               </div>
-              <button className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+              <button
+                onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); pushUrl(search, state, city, page + 1); }}
+                disabled={page === totalPages}
+                className="group w-14 h-14 flex items-center justify-center bg-white/80 backdrop-blur-xl border border-white text-gray-900 rounded-full disabled:opacity-30 hover:border-[#84cc16] transition-all font-bold shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+              >
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </button>
             </div>

@@ -1,10 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import CommentForm from './CommentForm';
+import { likeComment } from '@/services/blog.service';
 
 export default function Comment({ comment, blogId, user, isAuth }) {
   const [showReply, setShowReply] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate: handleLike } = useMutation({
+    mutationFn: () => likeComment(comment._id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blog-comments', blogId]);
+    },
+  });
 
   const displayName = comment.user?.name || comment.guestName || 'ANONYMOUS';
 
@@ -37,6 +47,7 @@ export default function Comment({ comment, blogId, user, isAuth }) {
           {/* Action Row */}
           <div className="flex items-center gap-4 mt-2 px-2">
             <button
+              onClick={() => handleLike()}
               className="flex items-center gap-1.5 text-[9px] font-mono text-gray-400 uppercase tracking-widest hover:text-[#84cc16] transition-colors group"
             >
               <svg className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

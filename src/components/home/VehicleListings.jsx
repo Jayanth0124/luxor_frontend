@@ -81,8 +81,11 @@ const DUMMY_VEHICLES = [
 ];
 
 export default function VehicleListings() {
-  const vehicles = DUMMY_VEHICLES;
-  const isLoading = false;
+  const { data, isLoading } = useQuery({
+    queryKey: ['featured-vehicles'],
+    queryFn: () => getVehicles({ limit: 6 }),
+  });
+  const vehicles = data?.vehicles ?? [];
 
   return (
     <section className="py-16 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 bg-white">

@@ -1,22 +1,34 @@
 'use client';
 
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { postComment } from '@/services/blog.service';
 
 export default function CommentForm({ blogId, parentId = null, onSuccess, user, isAuth }) {
   const [content, setContent] = useState('');
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const isPending = false; // Mocking mutation state for UI testing
-  const isError = false;
 
-  const handleSubmit = () => {
-    // Mocking submission
-    setTimeout(() => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading: isPending, isError } = useMutation({
+    mutationFn: (data) => postComment(blogId, data),
+    onSuccess: () => {
       setContent('');
       setSubmitted(true);
+      queryClient.invalidateQueries(['blog-comments', blogId]);
       if (onSuccess) onSuccess();
-    }, 1000);
+    },
+  });
+
+  const handleSubmit = () => {
+    mutate({
+      content,
+      parentId,
+      guestName: isAuth ? undefined : guestName,
+      guestEmail: isAuth ? undefined : guestEmail || undefined,
+    });
   };
 
   if (submitted) {

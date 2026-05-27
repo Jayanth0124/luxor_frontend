@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import PostStreamItem from './PostStreamItem';
+import { getPosts } from '@/services/blog.service';
 
 const DUMMY_POSTS = [
   {
@@ -68,7 +70,10 @@ export default function BlogContent() {
   const yBg = useTransform(scrollY, [0, 1000], ['0%', '30%']);
   const yText = useTransform(scrollY, [0, 800], ['0%', '15%']);
 
-  const posts = DUMMY_POSTS.filter(p => type === '' || p.type === type);
+  const { data: posts = [], isLoading } = useQuery({
+    queryKey: ['public-posts', type],
+    queryFn: () => getPosts({ type: type || undefined }),
+  });
 
   return (
     <main className={`min-h-screen transition-colors duration-500 overflow-hidden font-sans ${
@@ -199,7 +204,11 @@ export default function BlogContent() {
 
       {/* ── CINEMATIC CONTENT STREAM ── */}
       <section className={`pb-40 w-full transition-colors duration-500 ${isDark ? 'bg-gray-950' : 'bg-[#fcfcfc]'}`}>
-        {posts.length === 0 ? (
+        {isLoading ? (
+          <div className="h-[50vh] flex items-center justify-center">
+            <div className="w-10 h-10 border-4 border-[#84cc16] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : posts.length === 0 ? (
           <div className="h-[50vh] flex items-center justify-center text-gray-400 tracking-widest uppercase text-sm font-bold">
             No entries found in this stream.
           </div>

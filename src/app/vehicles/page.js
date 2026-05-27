@@ -277,9 +277,8 @@ function VehiclesContent() {
     }
   ];
 
-  // TEMPORARY DUMMY DATA INJECTION
-  const vehicles = dummyVehicles;
-  const total = dummyVehicles.length;
+  const vehicles = data?.vehicles ?? [];
+  const total = data?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
 
   const handleSearch = (e) => {

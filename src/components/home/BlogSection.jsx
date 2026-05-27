@@ -68,7 +68,7 @@ function Skeleton({ className }) {
 }
 
 export default function BlogSection() {
-  const [posts, setPosts] = useState(DUMMY_POSTS);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // Split layout states

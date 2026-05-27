@@ -81,8 +81,11 @@ const DUMMY_CAMPSITES = [
 ];
 
 export default function CampsiteListings() {
-  const campsites = DUMMY_CAMPSITES;
-  const isLoading = false;
+  const { data, isLoading } = useQuery({
+    queryKey: ['featured-campsites'],
+    queryFn: () => getCampsites({ limit: 6 }),
+  });
+  const campsites = data?.campsites ?? [];
 
   return (
     <section className="py-16 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 bg-[#f8fafc]">

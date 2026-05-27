@@ -3,8 +3,12 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
+import { selectIsAuthenticated, selectUser } from '@/store/authSlice';
+import { getPost, getComments } from '@/services/blog.service';
 
 const DUMMY_POSTS = {
   'himalayan-ascent': {
@@ -99,12 +103,30 @@ export default function BlogDetailContent() {
   const yHeroText = useTransform(scrollY, [0, 800], ['0%', '25%']);
   const opacityHeroText = useTransform(scrollY, [0, 500], [1, 0]);
 
-  const post = DUMMY_POSTS[slug] || DUMMY_POSTS['himalayan-ascent'];
-  const comments = DUMMY_COMMENTS;
-  const isAuth = false;
-  const user = null;
+  const isAuth = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
 
-  if (!post) {
+  const { data: post, isLoading: isPostLoading, isError: isPostError } = useQuery({
+    queryKey: ['public-post', slug],
+    queryFn: () => getPost(slug),
+    enabled: !!slug,
+  });
+
+  const { data: comments = [], isLoading: isCommentsLoading } = useQuery({
+    queryKey: ['blog-comments', post?._id],
+    queryFn: () => getComments(post._id),
+    enabled: !!post?._id,
+  });
+
+  if (isPostLoading) {
+    return (
+      <main className="min-h-screen bg-[#fcfcfc] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#84cc16] border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
+
+  if (isPostError || !post) {
     return (
       <main className="min-h-screen bg-[#fcfcfc] flex items-center justify-center text-gray-900">
         <p className="font-mono uppercase tracking-widest text-sm text-gray-500">Documentary Not Found.</p>
