@@ -77,12 +77,6 @@ export default function ContactContent() {
         
         {/* ── TOP HEADER ── */}
         <div className="text-center mb-12 lg:mb-16">
-          <div className="inline-flex items-center gap-2 bg-[#eef5e7] border border-[#dfead3] rounded-full px-4 py-2 mb-6 shadow-sm">
-            <Leaf className="w-4 h-4 text-[#84cc16]" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5f6b53]">
-              Get In Touch
-            </span>
-          </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-[#1e293b] leading-[1.1]">
             Let’s Plan Your

@@ -48,32 +48,21 @@ export default function HomeFooter() {
 
       {/* ── TOP SIMPLE SECTION (No Background Image) ── */}
       <div className="relative border-b border-[#e7eddc] bg-[#eff2ea]">
-        <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-24">
-
-          {/* LABEL */}
-          <div className="inline-flex items-center gap-3 bg-white border border-[#e7eddc] rounded-full px-4 py-1.5 shadow-sm mb-6">
-            <div className="relative flex">
-              <span className="w-2 h-2 rounded-full bg-[#84cc16]" />
-              <span className="absolute inset-0 rounded-full animate-ping bg-[#84cc16]/40" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#5c6b4f]">
-              Scenic Nature Journeys
-            </span>
-          </div>
+        <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-24 text-center">
 
           {/* TITLE */}
-          <h2 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] font-black tracking-tight text-[#1e293b] max-w-4xl">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] font-black tracking-tight text-[#1e293b] max-w-4xl mx-auto text-center">
             Explore Beautiful
             <span className="block text-[#84cc16]">Roads Less Traveled</span>
           </h2>
 
           {/* TEXT */}
-          <p className="mt-4 max-w-2xl text-base md:text-lg leading-relaxed text-[#64748b]">
+          <p className="mt-4 max-w-2xl text-base md:text-lg leading-relaxed text-[#64748b] mx-auto text-center">
             Discover scenic roadtrips, peaceful campsites, hidden destinations, and unforgettable outdoor journeys.
           </p>
 
           {/* BUTTONS */}
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-wrap gap-4 justify-center">
             <Link
               href="/vehicles"
               className="h-14 inline-flex items-center justify-center rounded-2xl bg-[#84cc16] px-7 text-sm font-black uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_rgba(132,204,22,0.25)] transition-all hover:-translate-y-0.5"
